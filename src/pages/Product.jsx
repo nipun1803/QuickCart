@@ -33,7 +33,7 @@ function ProductsPage() {
           {products
             .filter((e) => {
               if (searchedProduct) {
-                return e.title.toLowerCase().includes(searchedProduct);
+                return e.title.toLowerCase().trim().includes(searchedProduct);
               } else {
                 return true;
               }
@@ -52,7 +52,7 @@ function ProductsPage() {
                 <h3 className="product-title">{product.title}</h3>
                 <p className="product-price">${product.price}</p>
                 <p className="product-rating">
-                  Rating: {product.rating.rate}⭐ ({product.rating.count})
+                  Rating: {product.rating.rate}⭐️ ({product.rating.count})
                 </p>
                 {selectedProductId === product.id && (
                   <p className="product-description">{product.description}</p>
