@@ -7,12 +7,12 @@ export const Footer = () => {
         <a
           target={'_blank'}
           href='https://github.com/nipun1803'
-          className='fab fa-github'
+          className='fab-github'
         ></a>
         <a
           target={'_blank'}
           href='https://www.linkedin.com/in/nipun-patlori-2a5bb830a/'
-          className='fab fa-linkedin'
+          className='fab-linkedin'
         ></a>
       </div>
       <div className='footer-text'>© {new Date().getFullYear()} Quickcart. All rights reserved.</div>
