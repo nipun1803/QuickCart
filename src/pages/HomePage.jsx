@@ -1,4 +1,3 @@
-// HomePage.jsx
 import React from "react";
 import "../styles/HomePage.css";
 import { Link } from "react-router-dom";
@@ -27,7 +26,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
+
       <section className="features-section">
         <h2>Why QuickCart?</h2>
         <div className="features-grid">

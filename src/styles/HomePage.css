@@ -49,12 +49,10 @@
   background-color: #0056b3;
   transform: translateY(-2px);
 }
-
 .hero-btn:focus {
   outline: 2px solid #0056b3;
   outline-offset: 2px;
 }
-
 .hero-right {
   flex: 1.2;
   min-width: 320px;
@@ -118,6 +116,7 @@
   margin-top: 3rem;
   text-align: center;
   padding: 0 1.5rem;
+  margin-bottom: 3rem;
 }
 
 .features-section h2 {
