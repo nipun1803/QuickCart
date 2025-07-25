@@ -21,7 +21,8 @@
 .nav-logo {
   width: 40px;
   height: 40px;
-  object-fit: contain;
+  margin-bottom: 4px;
+  object-fit: cover;
 }
 
 .brand-text {

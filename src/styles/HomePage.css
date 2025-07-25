@@ -1,9 +1,9 @@
-
 .home-container {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background-color: #f9f9f9;
   color: #333;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
 }
 
 .section-title {
@@ -19,7 +19,7 @@
 .hero-section {
   width: 100%;
   /* Use min-height for responsive scaling */
-  min-height: 60vh; 
+  min-height: 60vh;
   /* Single background image for all screens */
   background: url('https://res.cloudinary.com/donqbxlnc/image/upload/v1648837512/fashify/01042022-D-Unisex-topbannercarousel-p3-brands-4090_bwk2pu.jpg') no-repeat center center/cover;
   display: flex;
@@ -33,14 +33,17 @@
 .hero-section::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
 }
 
 .hero-content {
   position: relative;
-  max-width: 95%; 
+  max-width: 95%;
   padding: 0 1rem;
 }
 
@@ -78,7 +81,7 @@
 .category-section,
 .showcase-section,
 .features-section {
-  padding: 3rem 1rem; 
+  padding: 3rem 1rem;
 }
 
 
@@ -87,10 +90,10 @@
 .features-grid {
   display: grid;
   gap: 1.5rem;
-  max-width: 1000px;
+  width: 60%;
   margin: 0 auto;
   /* All grids are single-column on mobile by default */
-  grid-template-columns: 1fr; 
+  /* grid-template-columns: 2fr; */
 }
 
 .showcase-grid img {
@@ -141,6 +144,7 @@
 
 /* ========== TABLET AND BEYOND (min-width: 768px) ========== */
 @media (min-width: 768px) {
+
   /* Adjust section padding for tablets */
   .category-section,
   .showcase-section,
@@ -152,12 +156,13 @@
   .category-grid,
   .showcase-grid,
   .features-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 2fr);
   }
+
   .hero-section {
-    min-height: 70vh; 
+    min-height: 70vh;
   }
-  
+
   .hero-title {
     font-size: 3rem;
   }
@@ -165,7 +170,7 @@
   .hero-subtitle {
     font-size: 1.2rem;
   }
-  
+
   .hero-btn {
     padding: 1rem 2rem;
     font-size: 1.1rem;
@@ -178,9 +183,9 @@
 
 @media (min-width: 1024px) {
   .hero-section {
-      min-height: 75vh;
+    min-height: 75vh;
   }
-    
+
   .hero-title {
     font-size: 3.5rem;
   }
