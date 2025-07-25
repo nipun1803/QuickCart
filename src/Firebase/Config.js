@@ -1,16 +1,17 @@
+// import apiKey from "./env";  
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCOUkwpcNgkI_a4bWYxENANHuOKRElCc1M",
-  authDomain: "quickcart-36806.firebaseapp.com",
-  projectId: "quickcart-36806",
-  storageBucket: "quickcart-36806.firebasestorage.app",
-  messagingSenderId: "705638566736",
-  appId: "1:705638566736:web:62c1824b4c9de07fd7ba55"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
 };
 
-// Initializing the  Firebase
+
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
