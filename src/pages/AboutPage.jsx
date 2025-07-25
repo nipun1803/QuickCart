@@ -13,7 +13,6 @@ function AboutPage() {
   return (
     <div className="about-page">
       <div className="about-wrapper">
-        {/* ===== ABOUT INTRO SECTION ===== */}
         <section className="about-intro">
           <h1>About QuickCart</h1>
           <p>
@@ -22,7 +21,6 @@ function AboutPage() {
           </p>
         </section>
 
-        {/* ===== FEATURES SECTION ===== */}
         <section className="about-features">
           <h2>What Makes Us Different</h2>
           <div className="feature-cards">
@@ -44,7 +42,6 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ===== STATS SECTION ===== */}
         <section className="stats-section">
           <h2>QuickCart in Numbers</h2>
           <div className="stats-grid">
@@ -66,7 +63,7 @@ function AboutPage() {
           </div>
         </section>
 
-        {/* ===== TEAM SECTION ===== */}
+
         <section className="team-section">
           <h2>Meet Our Team</h2>
           <div className="team-grid">

@@ -6,7 +6,6 @@ import { Truck, ShieldCheck, BadgeCheck } from "lucide-react";
 function HomePage() {
   return (
     <div className="home-container">
-      {/* ===== HERO SECTION ===== */}
       <section className="hero-section">
         <div className="hero-content">
           <div className="hero-left">
@@ -27,7 +26,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ===== FEATURES SECTION ===== */}
       <section className="features-section">
         <h2>Why QuickCart?</h2>
         <div className="features-grid">
