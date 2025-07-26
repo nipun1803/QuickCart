@@ -54,17 +54,17 @@ function HomePage() {
         <h2 className="section-title">Why Choose QuickCart?</h2>
         <div className="features-grid">
           <div className="feature-card">
-            <Truck size={36} color="#007bff" />
+            <Truck size={36} color="var(--primary-color)" />
             <h3>Fast Delivery</h3>
             <p>Lightning-fast shipping to your doorstep.</p>
           </div>
           <div className="feature-card">
-            <ShieldCheck size={36} color="#007bff" />
+            <ShieldCheck size={36} color="var(--primary-color)" />
             <h3>Secure Checkout</h3>
             <p>Encrypted & verified payments with every order.</p>
           </div>
           <div className="feature-card">
-            <BadgeCheck size={36} color="#007bff" />
+            <BadgeCheck size={36} color="var(--primary-color)" />
             <h3>Trusted Sellers</h3>
             <p>Only verified and top-rated vendors on board.</p>
           </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import "../styles/ProductPage.css";
 import FilterPanel from "../components/FilterPanel";
 import { Star } from "lucide-react";
@@ -42,6 +43,7 @@ function ProductsPage() {
       } catch (error) {
         console.error("Error fetching products:", error);
         setError("Failed to load products. Please try again later.");
+        toast.error("Failed to load products. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -88,17 +90,18 @@ function ProductsPage() {
   const handleAddToCart = (product) => {
     if (!product._id) {
       console.warn("Product missing _id, skipping add to cart");
+      toast.error("Product information is incomplete. Please try again.");
       return;
     }
     const alreadyInCart = cartItems.find((item) => item._id === product._id);
     if (alreadyInCart) {
-      alert("Item already in cart");
+      toast.error("Item is already in your cart!");
       return;
     }
     setCartItems((prev) => [...prev, product]);
     console.log("Cart items:", cartItems);
     localStorage.setItem("cart", JSON.stringify([...cartItems, product]));
-    alert("Added to cart!");
+    toast.success(`${product.title} added to cart successfully!`);
   };
 
   return (
@@ -143,8 +146,8 @@ function ProductsPage() {
                   <div className="rating-badge">
                     <Star
                       size={16}
-                      color="#007bff"
-                      fill="#007bff"
+                      color="var(--primary-color)"
+                      fill="var(--primary-color)"
                       style={{ marginRight: "4px" }}
                     />
                     {product.rating || "N/A"} | {product.reviews || 0} reviews

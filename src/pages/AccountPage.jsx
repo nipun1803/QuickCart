@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import '../styles/AccountPage.css'; 
 import { signIn, signUp, signInWithGoogle, logOut } from "../Services/Auth.js";
 
@@ -12,30 +13,33 @@ function App() {
     e.preventDefault();
     if (!email || !password) {
       setErrorMessage('Please enter both email and password.');
+      toast.error('Please enter both email and password.');
       return;
     }
 
     try {
       if (mode === 'login') {
         const user = await signIn(email, password);
-        alert(`Welcome back, ${user.email}`);
+        toast.success(`Welcome back, ${user.email}!`);
       } else {
         const user = await signUp(email, password);
-        alert(`Account created for ${user.email}`);
+        toast.success(`Account created successfully for ${user.email}!`);
       }
       setErrorMessage('');
     } catch (error) {
       setErrorMessage(error.message);
+      toast.error(error.message);
     }
   };
 
   const handleGoogleSignIn = async () => {
     try {
       const user = await signInWithGoogle();
-      alert(`Signed in with Google as ${user.email}`);
+      toast.success(`Signed in with Google as ${user.email}!`);
       setErrorMessage('');
     } catch (error) {
       setErrorMessage(error.message);
+      toast.error(error.message);
     }
   };
 

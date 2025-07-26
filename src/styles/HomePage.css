@@ -59,7 +59,7 @@
 }
 
 .hero-btn {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: #fff;
   padding: 0.8rem 1.6rem;
   border-radius: 8px;
@@ -71,7 +71,7 @@
 }
 
 .hero-btn:hover {
-  background-color: #0056b3;
+  background-color: #e55a00;
   transform: translateY(-2px);
 }
 
@@ -140,6 +140,7 @@
 }
 
 @media (min-width: 768px) {
+
   .category-section,
   .showcase-section,
   .features-section {

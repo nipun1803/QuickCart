@@ -28,7 +28,6 @@ function FilterPanel({
     <div className="filter-panel">
       <h3>Filters</h3>
 
-      {/* Filter for the category section */}
       <div className="filter-group">
         <p>Category:</p>
         {["Men", "Women", "Kids"].map((cat) => (
@@ -55,23 +54,20 @@ function FilterPanel({
         </label>
       </div>
 
-      {/* slider for rating bar*/}
       <div className="filter-group">
         <p style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           Minimum Rating: {selectedRating}
-          <Star size={16} color="#007bff" fill="#007bff" />
+          <Star size={16} color="var(--primary-color)" fill="var(--primary-color)" />
         </p>
         <Slider
           value={selectedRating}
           onChange={(e, newValue) => setSelectedRating(newValue)}
           min={0}
           max={5}
-          step={0.5}
+          step={1}
           valueLabelDisplay="auto"
         />
       </div>
-
-      {/* Slider for price range*/}
       <div className="filter-group">
         <p>
           Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}

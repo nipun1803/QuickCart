@@ -16,8 +16,9 @@ function AboutPage() {
         <section className="about-intro">
           <h1>About QuickCart</h1>
           <p>
-            At QuickCart, we redefine e-commerce with speed, trust, and customer delight.
-            Our mission is to make shopping effortless and enjoyable for everyone.
+            At QuickCart, we redefine e-commerce with speed, trust, and customer
+            delight. Our mission is to make shopping effortless and enjoyable
+            for everyone.
           </p>
         </section>
 
@@ -25,17 +26,17 @@ function AboutPage() {
           <h2>What Makes Us Different</h2>
           <div className="feature-cards">
             <div className="feature-card">
-              <ShieldCheck size={40} color="#007bff" />
+              <ShieldCheck size={40} color="var(--primary-color)" />
               <h3>Trusted Platform</h3>
               <p>100% secure payments and buyer protection for every order.</p>
             </div>
             <div className="feature-card">
-              <ShoppingBag size={40} color="#007bff" />
+              <ShoppingBag size={40} color="var(--primary-color)" />
               <h3>Vast Product Range</h3>
               <p>Thousands of verified products across categories.</p>
             </div>
             <div className="feature-card">
-              <Smile size={40} color="#007bff" />
+              <Smile size={40} color="var(--primary-color)" />
               <h3>Customer First</h3>
               <p>24/7 support and return-friendly policies.</p>
             </div>
@@ -47,22 +48,27 @@ function AboutPage() {
           <div className="stats-grid">
             <div className="stat-box">
               <UsersRound size={30} />
-              <h3><CountUp end={250000} duration={3} separator="," /></h3>
+              <h3>
+                <CountUp end={250000} duration={3} separator="," />
+              </h3>
               <p>Orders Delivered</p>
             </div>
             <div className="stat-box">
               <Star size={30} />
-              <h3><CountUp end={50000} duration={3} separator="," /></h3>
+              <h3>
+                <CountUp end={50000} duration={3} separator="," />
+              </h3>
               <p>Happy Customers</p>
             </div>
             <div className="stat-box">
               <ShieldCheck size={30} />
-              <h3><CountUp end={1200} duration={3} separator="," /></h3>
+              <h3>
+                <CountUp end={1200} duration={3} separator="," />
+              </h3>
               <p>Verified Sellers</p>
             </div>
           </div>
         </section>
-
 
         <section className="team-section">
           <h2>Meet Our Team</h2>
