@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 function HomePage() {
   return (
     <div className="home-container">
-      {/* ========== HERO SECTION ========== */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">Shop Smarter with QuickCart</h1>
@@ -19,7 +18,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ========== SHOP BY CATEGORY ========== */}
       <section className="category-section">
         <h2 className="section-title">Shop by Category</h2>
         <div className="category-grid">
@@ -34,8 +32,6 @@ function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* ========== E-COMMERCE VISUAL SHOWCASE ========== */}
       <section className="showcase-section">
         <h2 className="section-title">Discover Our Collection</h2>
         <div className="showcase-grid">

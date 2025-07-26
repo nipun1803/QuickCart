@@ -3,7 +3,7 @@
   background-color: #f9f9f9;
   color: #333;
   overflow-x: hidden;
-  /* Prevent horizontal scroll */
+
 }
 
 .section-title {
@@ -15,12 +15,10 @@
   padding: 0 1rem;
 }
 
-/* ========== HERO SECTION (FULLY RESPONSIVE) ========== */
+
 .hero-section {
   width: 100%;
-  /* Use min-height for responsive scaling */
-  min-height: 60vh;
-  /* Single background image for all screens */
+  min-height: 50vh;
   background: url('https://res.cloudinary.com/donqbxlnc/image/upload/v1648837512/fashify/01042022-D-Unisex-topbannercarousel-p3-brands-4090_bwk2pu.jpg') no-repeat center center/cover;
   display: flex;
   align-items: center;
@@ -77,7 +75,7 @@
   transform: translateY(-2px);
 }
 
-/* UNIVERSAL SECTION PADDING */
+
 .category-section,
 .showcase-section,
 .features-section {
@@ -92,8 +90,7 @@
   gap: 1.5rem;
   width: 60%;
   margin: 0 auto;
-  /* All grids are single-column on mobile by default */
-  /* grid-template-columns: 2fr; */
+
 }
 
 .showcase-grid img {
@@ -142,10 +139,7 @@
   line-height: 1.6;
 }
 
-/* ========== TABLET AND BEYOND (min-width: 768px) ========== */
 @media (min-width: 768px) {
-
-  /* Adjust section padding for tablets */
   .category-section,
   .showcase-section,
   .features-section {
