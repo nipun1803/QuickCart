@@ -322,21 +322,7 @@
   color: #333;
 }
 
-.free-shipping-notice {
-  background-color: #fff8f5;
-  border: 1px solid #ffe8d6;
-  border-radius: 8px;
-  padding: 0.75rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
 
-.free-shipping-notice p {
-  margin: 0;
-  color: var(--primary-color);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
 
 .buy-now-btn {
   width: 100%;

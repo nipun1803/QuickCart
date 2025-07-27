@@ -60,10 +60,7 @@ export default function Cart() {
   };
 
   const calculateTotal = () => {
-    const subtotal = calculateSubtotal();
-    const shipping = subtotal > 500 ? 0 : 50;
-    const tax = subtotal * 0.18;
-    return subtotal + shipping + tax;
+    return calculateSubtotal();
   };
 
   const handleBuyNow = () => {
@@ -180,18 +177,8 @@ export default function Cart() {
           <h2>Order Summary</h2>
           
           <div className="summary-item">
-            <span>Subtotal ({cartItems.length} items):</span>
+            <span>Total ({cartItems.length} items):</span>
             <span>₹{calculateSubtotal().toFixed(2)}</span>
-          </div>
-          
-          <div className="summary-item">
-            <span>Shipping:</span>
-            <span>{calculateSubtotal() > 500 ? "FREE" : "₹50.00"}</span>
-          </div>
-          
-          <div className="summary-item">
-            <span>Tax (18% GST):</span>
-            <span>₹{(calculateSubtotal() * 0.18).toFixed(2)}</span>
           </div>
           
           <div className="summary-divider"></div>
@@ -199,12 +186,6 @@ export default function Cart() {
           <div className="summary-total">
             <span>Total:</span>
             <span>₹{calculateTotal().toFixed(2)}</span>
-          </div>
-          
-          <div className="free-shipping-notice">
-            {calculateSubtotal() < 500 && (
-              <p>Add ₹{(500 - calculateSubtotal()).toFixed(2)} more for FREE shipping!</p>
-            )}
           </div>
           
           <button onClick={handleBuyNow} className="buy-now-btn">
