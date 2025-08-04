@@ -65,7 +65,6 @@ function Navbar() {
 
           {user ? (
             <>
-              <Link to="/account"><User size={18} /> My Account</Link>
               <button className="logout-btn" onClick={handleLogout}>
                 <LogOut size={18} /> Logout
               </button>
