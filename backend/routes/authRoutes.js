@@ -1,12 +1,13 @@
 import express from 'express';
 import passport from 'passport';
+import jwt from 'jsonwebtoken';
 import {
-    register,
-    login,
-    logout,
-    firebaseAuth,
-    getProfile,
-    updateProfile,
+  register,
+  login,
+  logout,
+  firebaseAuth,
+  getProfile,
+  updateProfile,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import generateToken from '../utils/generateToken.js';
@@ -18,27 +19,56 @@ router.post('/login', login);
 router.post('/logout', logout);
 
 
-router.get('/google', passport.authenticate('google', {
-    scope: ['profile', 'email']
-}));
 
 router.get(
-    '/google/callback',
-    passport.authenticate('google', {
-        failureRedirect: `${process.env.FRONTEND_URL}/signin`,
-        session: false
-    }),
-    (req, res) => {
-        if (!req.user) {
-            return res.redirect(`${process.env.FRONTEND_URL}/signin?error=auth_failed`);
-        }
-
-        generateToken(res, req.user._id);
-
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        res.redirect(frontendUrl);
-    }
+  '/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  })
 );
+
+router.get(
+  '/google/callback',
+  passport.authenticate('google', {
+    session: false,
+    failureRedirect: `${process.env.FRONTEND_URL}/signin?error=oauth`,
+  }),
+  (req, res) => {
+    if (!req.user) {
+      return res.redirect(`${process.env.FRONTEND_URL}/signin?error=oauth`);
+    }
+
+
+    const tempToken = jwt.sign(
+      { id: req.user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '2m' }
+    );
+
+
+    res.redirect(
+      `${process.env.FRONTEND_URL}/auth/callback?temp=${tempToken}`
+    );
+  }
+);
+
+
+
+router.get('/oauth/finalize', (req, res) => {
+  try {
+    const { temp } = req.query;
+    if (!temp) return res.sendStatus(401);
+
+    const decoded = jwt.verify(temp, process.env.JWT_SECRET);
+
+    generateToken(res, decoded.id);
+
+    res.json({ success: true });
+  } catch (error) {
+    res.sendStatus(401);
+  }
+});
+
 
 
 router.post('/firebase', firebaseAuth);

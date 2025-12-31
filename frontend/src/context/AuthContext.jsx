@@ -16,22 +16,35 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchProfile = async () => {
+        const initAuth = async () => {
             try {
+                // 🔹 Step 1: check if coming from Google OAuth
+                const params = new URLSearchParams(window.location.search);
+                const temp = params.get('temp');
+
+                if (temp) {
+                    // 🔹 Step 2: finalize OAuth → backend sets cookie
+                    await api.get(`/auth/oauth/finalize?temp=${temp}`);
+
+                    // 🔹 Step 3: clean URL (remove ?temp)
+                    window.history.replaceState({}, document.title, '/');
+                }
+
+                // 🔹 Step 4: fetch logged-in user using cookie
                 const { data } = await api.get('/auth/profile');
                 setUser(data);
-            } catch {
+            } catch (error) {
                 setUser(null);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProfile();
+        initAuth();
     }, []);
 
-
     const login = async () => {
+        // Optional helper (email/password login)
         const { data } = await api.get('/auth/profile');
         setUser(data);
     };
