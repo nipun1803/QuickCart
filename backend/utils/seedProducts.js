@@ -91,15 +91,15 @@ const products = [
 const seedDatabase = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI);
-        console.log('✅ MongoDB Connected');
+        console.log('MongoDB Connected');
 
         // Clear existing products
         await Product.deleteMany();
-        console.log('🗑️  Cleared existing products');
+        console.log('Cleared existing products');
 
         // Insert sample products
         await Product.insertMany(products);
-        console.log('✅ Sample products added');
+        console.log('Sample products added');
 
         // Create admin user if doesn't exist
         const adminExists = await User.findOne({ email: 'admin@quickcart.com' });
@@ -110,15 +110,15 @@ const seedDatabase = async () => {
                 password: 'admin123',
                 role: 'admin',
             });
-            console.log('✅ Admin user created (email: admin@quickcart.com, password: admin123)');
+            console.log('Admin user created (email: admin@quickcart.com, password: admin123)');
         } else {
-            console.log('ℹ️  Admin user already exists');
+            console.log('Admin user already exists');
         }
 
-        console.log('✅ Database seeded successfully!');
+        console.log('Database seeded successfully!');
         process.exit(0);
     } catch (error) {
-        console.error('❌ Error seeding database:', error);
+        console.error('Error seeding database:', error);
         process.exit(1);
     }
 };
