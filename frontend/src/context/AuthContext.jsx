@@ -12,34 +12,28 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem('user');
-        return storedUser ? JSON.parse(storedUser) : null;
-    });
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check if user is logged in via API (cookie)
-        const checkUserLoggedIn = async () => {
+        const fetchProfile = async () => {
             try {
                 const { data } = await api.get('/auth/profile');
                 setUser(data);
-            } catch (error) {
-                // Not logged in or session expired
+            } catch {
                 setUser(null);
-                localStorage.removeItem('user');
             } finally {
                 setLoading(false);
             }
         };
 
-        checkUserLoggedIn();
+        fetchProfile();
     }, []);
 
-    const login = (userData) => {
-        // Token is set in cookie by backend
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
+
+    const login = async () => {
+        const { data } = await api.get('/auth/profile');
+        setUser(data);
     };
 
     const logout = async () => {
@@ -48,19 +42,15 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Logout failed', error);
         }
-        localStorage.removeItem('user');
-        localStorage.removeItem('cart');
         setUser(null);
+        localStorage.removeItem('cart');
     };
 
     const updateUser = (userData) => {
-        localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
     };
 
-    const isAdmin = () => {
-        return user?.role === 'admin';
-    };
+    const isAdmin = () => user?.role === 'admin';
 
     const value = {
         user,
@@ -72,5 +62,9 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
     };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    );
 };

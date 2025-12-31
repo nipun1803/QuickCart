@@ -1,6 +1,5 @@
 import express from 'express';
 import passport from 'passport';
-import crypto from 'crypto';
 import {
     register,
     login,
@@ -16,33 +15,28 @@ const router = express.Router();
 
 router.post('/register', register);
 router.post('/login', login);
-// router.post('/login', login); // Removed duplicate
 router.post('/logout', logout);
 
-// Google OAuth Routes
-router.get('/google', (req, res, next) => {
-    if (!process.env.GOOGLE_CLIENT_ID) {
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        return res.redirect(`${frontendUrl}/signin?error=oauth_missing`);
-    }
-    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
-});
+
+router.get('/google', passport.authenticate('google', {
+    scope: ['profile', 'email']
+}));
 
 router.get(
     '/google/callback',
-    passport.authenticate('google', { failureRedirect: '/signin', session: false }),
+    passport.authenticate('google', {
+        failureRedirect: `${process.env.FRONTEND_URL}/signin`,
+        session: false
+    }),
     (req, res) => {
-        // Successful authentication
         if (!req.user) {
-            return res.redirect('/signin?error=auth_failed');
+            return res.redirect(`${process.env.FRONTEND_URL}/signin?error=auth_failed`);
         }
 
-        const token = generateToken(res, req.user._id);
+        generateToken(res, req.user._id);
 
-        // Redirect to frontend with token
-        // In production, use environment variable for frontend URL
         const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        res.redirect(`${frontendUrl}/auth/callback?token=${token}`);
+        res.redirect(frontendUrl);
     }
 );
 

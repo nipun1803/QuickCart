@@ -4,45 +4,35 @@ import User from '../models/User.js';
 export const protect = async (req, res, next) => {
     let token;
 
-    if (
+    // ✅ 1. Prefer cookie-based auth (OAuth)
+    if (req.cookies && req.cookies.jwt) {
+        token = req.cookies.jwt;
+    }
+    // ✅ 2. Fallback to Bearer token (API clients)
+    else if (
         req.headers.authorization &&
         req.headers.authorization.startsWith('Bearer')
     ) {
-        try {
-            token = req.headers.authorization.split(' ')[1];
+        token = req.headers.authorization.split(' ')[1];
+    }
 
-
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-
-            req.user = await User.findById(decoded.id).select('-password');
-            if (!req.user) {
-
-                return res.status(401).json({ message: 'User not found' });
-            }
-            next();
-        } catch (error) {
-            console.error('Auth middleware error:', error.message);
-            return res.status(401).json({ message: 'Not authorized, token failed' });
-        }
-    } else if (req.cookies.jwt) {
-        token = req.cookies.jwt;
-
-        try {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = await User.findById(decoded.id).select('-password');
-            if (!req.user) {
-
-                return res.status(401).json({ message: 'User not found' });
-            }
-            next();
-        } catch (error) {
-            console.error('Auth middleware error:', error.message);
-            return res.status(401).json({ message: 'Not authorized, token failed' });
-        }
-    } else {
-
+    if (!token) {
         return res.status(401).json({ message: 'Not authorized, no token' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        req.user = await User.findById(decoded.id).select('-password');
+
+        if (!req.user) {
+            return res.status(401).json({ message: 'User not found' });
+        }
+
+        next();
+    } catch (error) {
+        console.error('Auth middleware error:', error.message);
+        return res.status(401).json({ message: 'Not authorized, token failed' });
     }
 };
 
