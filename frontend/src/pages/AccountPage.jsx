@@ -188,7 +188,11 @@ function AccountPage() {
                   <Button
                     variant="outline"
                     className="w-full mb-6"
-                    onClick={() => window.location.href = `${api.defaults.baseURL}/api/auth/google`}
+                    onClick={() => {
+                      window.location.replace(
+                        "https://quickcart-vr59.onrender.com/api/auth/google"
+                      );
+                    }}
                   >
                     <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5 mr-2" />
                     Continue with Google
@@ -216,7 +220,7 @@ function AccountPage() {
                   onClick={() => setFormData({
                     name: '',
                     email: isAdminMode ? 'admin@quickcart.com' : 'demo@user.com',
-                    password: isAdminMode ? 'adminpassword' : 'password123'
+                    password: isAdminMode ? 'adminpassword' : 'admin123'
                   })}
                 >
                   {isAdminMode ? 'Fill Demo Admin' : 'Fill Demo User'}
