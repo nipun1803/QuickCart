@@ -1,126 +1,80 @@
-import dotenv from 'dotenv';
+// Seed Products Script
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import Product from '../models/Product.js';
 import User from '../models/User.js';
+import connectDB from '../config/db.js';
 
 dotenv.config();
+connectDB();
 
 const products = [
     {
-        title: "Men's Casual T-Shirt",
-        description: "Comfortable cotton t-shirt perfect for everyday wear",
-        price: 599,
-        category: "Men",
-        image: "https://res.cloudinary.com/donqbxlnc/image/upload/v1648516571/fashify/25d7ff1d-6680-4629-b7f8-dda51fb89dc61592396707535-Nautica-Men-Tshirts-3811592396706267-4_hxanis.webp",
-        rating: 4.5,
-        reviews: 128,
-        stock: 50,
+        title: "Wireless Noise-Canceling Headphones",
+        description: "Experience premium sound quality with robust active noise cancellations, 30-hour battery life, and ultra-comfortable ear cushions.",
+        price: 249.99,
+        category: "Electronics",
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
+        rating: { rate: 4.8, count: 420 },
+        stock: 50
     },
     {
-        title: "Men's Slim Fit Casual Shirt",
-        description: "Stylish maroon slim fit casual shirt for boys",
-        price: 899,
-        category: "Kids",
-        image: "https://res.cloudinary.com/donqbxlnc/image/upload/v1648516848/fashify/b33911a2-038f-419a-afd9-e7f7949310441639746739865AllenSollyJuniorBoysMaroonSlimFitCasualShirt1_k5fy77.webp",
-        rating: 4.3,
-        reviews: 85,
-        stock: 30,
+        title: "Smart Led Watch Series 7",
+        description: "Track your health metrics, receive notifications, and stay connected with this sleek, water-resistant smartwatch.",
+        price: 399.00,
+        category: "Electronics",
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
+        rating: { rate: 4.5, count: 210 },
+        stock: 30
     },
     {
-        title: "Men's Orange Brand Logo T-Shirt",
-        description: "One8 x PUMA Men Orange Brand Logo Pure Cotton T-Shirt",
-        price: 1299,
-        category: "Men",
-        image: "https://res.cloudinary.com/donqbxlnc/image/upload/v1648516584/fashify/494a0494-2127-485d-8324-28aafe60ca0f1646647959983-one8-x-PUMA-Men-Orange-Brand-Logo-One8Core-Pure-Cotton-Virat-1_vdlx2v.webp",
-        rating: 4.7,
-        reviews: 256,
-        stock: 45,
+        title: "Ergonomic Office Chair",
+        description: "Boost productivity with this fully adjustable mesh chair designed for maximum lumbar support and all-day comfort.",
+        price: 199.50,
+        category: "Furniture",
+        image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=800&q=80",
+        rating: { rate: 4.7, count: 150 },
+        stock: 20
     },
     {
-        title: "Women's Floral Print Dress",
-        description: "Beautiful floral print dress for women",
-        price: 1499,
-        category: "Women",
-        image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500",
-        rating: 4.6,
-        reviews: 142,
-        stock: 25,
+        title: "Professional DSLR Camera Kit",
+        description: "Capture stunning photos and 4K video with this 24MP DSLR camera. Includes 18-55mm lens and carrying bag.",
+        price: 899.99,
+        category: "Electronics",
+        image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80",
+        rating: { rate: 4.9, count: 85 },
+        stock: 12
     },
     {
-        title: "Women's Denim Jacket",
-        description: "Classic denim jacket for all seasons",
-        price: 1899,
-        category: "Women",
-        image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500",
-        rating: 4.4,
-        reviews: 98,
-        stock: 20,
+        title: "Designer Polarized Sunglasses",
+        description: "Protect your eyes in style with these premium aviator sunglasses featuring UV400 protection and durable metal frames.",
+        price: 129.00,
+        category: "Fashion",
+        image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&q=80",
+        rating: { rate: 4.6, count: 300 },
+        stock: 100
     },
     {
-        title: "Kids Graphic T-Shirt",
-        description: "Fun graphic t-shirt for kids",
-        price: 499,
-        category: "Kids",
-        image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=500",
-        rating: 4.2,
-        reviews: 67,
-        stock: 40,
-    },
-    {
-        title: "Men's Formal Blazer",
-        description: "Professional blazer for formal occasions",
-        price: 2999,
-        category: "Men",
-        image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500",
-        rating: 4.8,
-        reviews: 189,
-        stock: 15,
-    },
-    {
-        title: "Women's Summer Top",
-        description: "Light and breezy summer top",
-        price: 799,
-        category: "Women",
-        image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500",
-        rating: 4.1,
-        reviews: 73,
-        stock: 35,
-    },
+        title: "Running Sneakers - Air Flow",
+        description: "Lightweight and breathable running shoes designed for speed and comfort on any terrain.",
+        price: 89.95,
+        category: "Fashion",
+        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
+        rating: { rate: 4.3, count: 1050 },
+        stock: 200
+    }
 ];
 
-const seedDatabase = async () => {
+const seedData = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('MongoDB Connected');
-
-        // Clear existing products
         await Product.deleteMany();
-        console.log('Cleared existing products');
-
-        // Insert sample products
         await Product.insertMany(products);
-        console.log('Sample products added');
-
-        // Create admin user if doesn't exist
-        const adminExists = await User.findOne({ email: 'admin@quickcart.com' });
-        if (!adminExists) {
-            await User.create({
-                name: 'Admin',
-                email: 'admin@quickcart.com',
-                password: 'admin123',
-                role: 'admin',
-            });
-            console.log('Admin user created (email: admin@quickcart.com, password: admin123)');
-        } else {
-            console.log('Admin user already exists');
-        }
-
-        console.log('Database seeded successfully!');
-        process.exit(0);
+        console.log('Data Imported!');
+        process.exit();
     } catch (error) {
-        console.error('Error seeding database:', error);
+        console.error(`Error: ${error.message}`);
         process.exit(1);
     }
 };
 
-seedDatabase();
+seedData();
