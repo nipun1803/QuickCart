@@ -2,9 +2,9 @@ name: Integration
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
   workflow_dispatch:
 
 jobs:
@@ -13,17 +13,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Installing Dependencies
-        run: npm i
+      # Frontend Node version from package.json
+      - name: Setup Node (Frontend)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend/package.json
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
 
-      - name: Build command
-        run: npm run build
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
 
-      - name: Upload a Build Artifact
+      - name: Build frontend
+        run: npm run build --prefix frontend
+
+      # Backend Node version from package.json
+      - name: Setup Node (Backend)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: backend/package.json
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
+
+      - name: Upload frontend build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: my-build-artifact
-          path: .next/           
+          name: frontend-dist
+          path: frontend/dist
           if-no-files-found: warn
           retention-days: 1
 
@@ -32,8 +51,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Installing Dependenciesssss
-        run: npm i
-        
-      - name: Running test cases
-        run: npm run test
+      # Backend tests
+      - name: Setup Node (Backend)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: backend/package.json
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
+
+      - name: Run backend tests
+        run: npm test --prefix backend
+
+      # Frontend tests
+      - name: Setup Node (Frontend)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend/package.json
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Run frontend tests
+        run: npm test --prefix frontend
