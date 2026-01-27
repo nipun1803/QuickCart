@@ -13,9 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
       - name: Install frontend dependencies
-        run: npm install --prefix frontend
+        run: npm ci --prefix frontend
 
       - name: Build frontend
         run: npm run build --prefix frontend
@@ -30,21 +34,27 @@ jobs:
 
 
       - name: Install backend dependencies
-        run: npm install --prefix backend
+        run: npm ci --prefix backend
 
   unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
       - name: Install backend dependencies
-        run: npm install --prefix backend
+        run: npm ci --prefix backend
 
       - name: Run backend tests
         run: npm test --prefix backend
 
+
       - name: Install frontend dependencies
-        run: npm install --prefix frontend
+        run: npm ci --prefix frontend
 
       - name: Run frontend tests
         run: npm test --prefix frontend
