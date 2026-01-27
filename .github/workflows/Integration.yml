@@ -13,7 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Frontend Node version from package.json
       - name: Setup Node (Frontend)
         uses: actions/setup-node@v4
         with:
@@ -27,7 +26,7 @@ jobs:
       - name: Build frontend
         run: npm run build --prefix frontend
 
-      # Backend Node version from package.json
+
       - name: Setup Node (Backend)
         uses: actions/setup-node@v4
         with:
@@ -37,6 +36,7 @@ jobs:
 
       - name: Install backend dependencies
         run: npm ci --prefix backend
+
 
       - name: Upload frontend build artifact
         uses: actions/upload-artifact@v4
@@ -51,7 +51,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Backend tests
+
       - name: Setup Node (Backend)
         uses: actions/setup-node@v4
         with:
@@ -65,7 +65,6 @@ jobs:
       - name: Run backend tests
         run: npm test --prefix backend
 
-      # Frontend tests
       - name: Setup Node (Frontend)
         uses: actions/setup-node@v4
         with:
