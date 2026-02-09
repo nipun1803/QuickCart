@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ===== CONFIG =====
-INSTANCE_ID="i-0abf4270d18112e19"
+INSTANCE_ID="i-0abf4270d19112e19"
 
 # ===== FETCH STATE =====
 STATE=$(aws ec2 describe-instances \
