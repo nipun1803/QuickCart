@@ -8,8 +8,45 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  unit-tests:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
+
+      - name: Run backend lint
+        run: npm run lint --prefix backend
+
+      - name: Run backend tests
+        run: npm test --prefix backend
+
+      - name: Install frontend dependencies
+        run: npm ci --prefix frontend
+
+      - name: Run frontend lint
+        run: npm run lint --prefix frontend
+
+      - name: Run frontend tests
+        run: npm test --prefix frontend
+
+
+  build:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +54,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install frontend dependencies
         run: npm ci --prefix frontend
@@ -29,32 +67,5 @@ jobs:
         with:
           name: frontend-build
           path: frontend/.next/
-          if-no-files-found: warn
-          retention-days: 1
-
-
-      - name: Install backend dependencies
-        run: npm ci --prefix backend
-
-  unit-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install backend dependencies
-        run: npm ci --prefix backend
-
-      - name: Run backend tests
-        run: npm test --prefix backend
-
-
-      - name: Install frontend dependencies
-        run: npm ci --prefix frontend
-
-      - name: Run frontend tests
-        run: npm test --prefix frontend
+          if-no-files-found: error
+          retention-days: 7
