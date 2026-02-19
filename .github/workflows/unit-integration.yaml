@@ -22,6 +22,15 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
+    env:
+      PORT: 5001
+      MONGODB_URI: mongodb://127.0.0.1:27017/testdb
+      JWT_SECRET: testsecret
+      GOOGLE_CLIENT_ID: test
+      GOOGLE_CLIENT_SECRET: test
+      NODE_ENV: test
+      SESSION_SECRET: test
+
     steps:
       # Checkout repository
       - uses: actions/checkout@v4
@@ -46,13 +55,6 @@ jobs:
           cd backend
           npm start &
           npx wait-on http://localhost:5001/api/health
-        env:
-          PORT: 5001
-          MONGO_URI: mongodb://127.0.0.1:27017/testdb
-          JWT_SECRET: testsecret
-          GOOGLE_CLIENT_ID: test
-          GOOGLE_CLIENT_SECRET: test
-          NODE_ENV: test
 
       # Run Backend Tests
       - name: Run Backend Tests
