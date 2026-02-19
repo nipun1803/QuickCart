@@ -54,6 +54,12 @@ jobs:
           GOOGLE_CLIENT_SECRET: test
           NODE_ENV: test
 
+      # Run Backend Tests
+      - name: Run Backend Tests
+        run: |
+          cd backend
+          npm test
+
       # Install Frontend Dependencies
       - name: Install Frontend Dependencies
         run: |
@@ -64,4 +70,4 @@ jobs:
       - name: Run Frontend Tests
         run: |
           cd frontend
-          npm test -- --watchAll=false
+          npm test
