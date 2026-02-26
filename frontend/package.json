@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run -c ../tests/vitest.frontend.config.js"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

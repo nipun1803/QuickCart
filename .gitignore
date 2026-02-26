@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.env
+.vscode/*
+!.vscode/extensions.json
+tests/playwright-report/
+tests/test-results/
+.DS_Store
+test_output.txt

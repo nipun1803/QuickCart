@@ -15,7 +15,8 @@ const products = [
         price: 249.99,
         category: "Electronics",
         image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80",
-        rating: { rate: 4.8, count: 420 },
+        rating: 4.8,
+        reviews: 420,
         stock: 50
     },
     {
@@ -24,7 +25,8 @@ const products = [
         price: 399.00,
         category: "Electronics",
         image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80",
-        rating: { rate: 4.5, count: 210 },
+        rating: 4.5,
+        reviews: 210,
         stock: 30
     },
     {
@@ -33,7 +35,8 @@ const products = [
         price: 199.50,
         category: "Furniture",
         image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=800&q=80",
-        rating: { rate: 4.7, count: 150 },
+        rating: 4.7,
+        reviews: 150,
         stock: 20
     },
     {
@@ -42,7 +45,8 @@ const products = [
         price: 899.99,
         category: "Electronics",
         image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80",
-        rating: { rate: 4.9, count: 85 },
+        rating: 4.9,
+        reviews: 85,
         stock: 12
     },
     {
@@ -51,7 +55,8 @@ const products = [
         price: 129.00,
         category: "Fashion",
         image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&q=80",
-        rating: { rate: 4.6, count: 300 },
+        rating: 4.6,
+        reviews: 300,
         stock: 100
     },
     {
@@ -60,7 +65,8 @@ const products = [
         price: 89.95,
         category: "Fashion",
         image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80",
-        rating: { rate: 4.3, count: 1050 },
+        rating: 4.3,
+        reviews: 1050,
         stock: 200
     }
 ];

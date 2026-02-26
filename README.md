@@ -495,3 +495,42 @@ npm start  # Production mode
 - Verify Firebase credentials in frontend `.env`
 - Check JWT_SECRET is set in backend `.env`
 - Clear browser localStorage and cookies
+
+## 🧪 Testing
+
+QuickCart uses a comprehensive testing strategy covering unit, integration, and end-to-end (E2E) tests. All test-related configurations and dependencies are isolated in the `tests/` directory to keep the root project clean.
+
+### Test Structure
+
+```
+tests/
+├── unit/               # Mocked unit tests (Fast, no DB required)
+│   ├── backend/        # Backend controller tests
+│   └── frontend/       # Frontend component tests
+├── integration/        # Database and UI-backed integration tests
+│   ├── backend/        # API integration tests (Requires MongoDB)
+│   └── frontend/       # Component integration tests (jsdom)
+└── e2e/                # Playwright end-to-end browser tests
+```
+
+### Running Tests
+
+To run tests, navigate to the `tests/` directory and use the following commands:
+
+```bash
+cd tests
+
+# Run all tests sequentially
+npm run test:all
+
+# Run specific test suites
+npm run test:unit:backend    # Backend Unit Tests
+npm run test:unit:frontend   # Frontend Unit Tests
+npm run test:integration     # All Integration Tests
+npm run test:e2e             # Playwright E2E Tests
+```
+
+> [!NOTE]
+> - **Unit Tests** are fully mocked and do not require a database or server to be running.
+> - **Integration Tests** require a running MongoDB instance (configured in `tests/vitest.integration.config.js`).
+> - **E2E Tests** are configured to automatically start the backend and frontend servers.
