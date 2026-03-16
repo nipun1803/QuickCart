@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables from the backend folder
 dotenv.config({ path: path.resolve(__dirname, '../backend/.env') });
