@@ -1,0 +1,40 @@
+name: Automated EC2 Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Ensure EC2 is Running
+        run: |
+          chmod +x ./scripts/safe-ec2-control.sh
+          ./scripts/safe-ec2-control.sh start
+
+      - name: Deploy Code via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ec2-user/QuickCart || git clone https://github.com/nipun1803/QuickCart.git /home/ec2-user/QuickCart
+            cd /home/ec2-user/QuickCart
+            git pull origin main
+            chmod +x ./scripts/run.sh
+            ./scripts/run.sh prod
