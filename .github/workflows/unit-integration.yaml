@@ -32,10 +32,8 @@ jobs:
       SESSION_SECRET: test
 
     steps:
-      # Checkout repository
       - uses: actions/checkout@v4
 
-      # Setup Node
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -43,32 +41,27 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
 
-      # Install Backend Dependencies
       - name: Install Backend Dependencies
         run: |
           cd backend
           npm ci
 
-      # Start Backend (Production Mode)
       - name: Start Backend
         run: |
           cd backend
           npm start &
           npx wait-on http://localhost:5001/api/health
 
-      # Run Backend Tests
       - name: Run Backend Tests
         run: |
           cd backend
           npm test
 
-      # Install Frontend Dependencies
       - name: Install Frontend Dependencies
         run: |
           cd frontend
           npm ci
 
-      # Run Frontend Tests
       - name: Run Frontend Tests
         run: |
           cd frontend
