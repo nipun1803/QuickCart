@@ -25,6 +25,9 @@ jobs:
         run: npm ci
       - name: Run linter
         run: npm run lint
+      - name: Install test dependencies
+        run: npm ci
+        working-directory: ./tests
       - name: Run tests (Unit)
         run: npm test
 
@@ -49,5 +52,8 @@ jobs:
         run: npm ci
       - name: Run linter
         run: npm run lint
+      - name: Install test dependencies
+        run: npm ci
+        working-directory: ./tests
       - name: Run tests
         run: npm test
