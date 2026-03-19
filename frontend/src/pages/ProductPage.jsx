@@ -28,6 +28,7 @@ function ProductsPage() {
       fetchProducts(1);
     }, 500);
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchedProduct, selectedCategory, selectedRating, priceRange]); // Reset to page 1 on filter change
 
   const fetchProducts = async (page = 1) => {
@@ -83,9 +84,7 @@ function ProductsPage() {
     }
   };
 
-  const handleAddToWishlist = (product) => {
-    toast.success("Added to wishlist");
-  };
+
 
   return (
     <div className="min-h-screen pt-20 bg-background">

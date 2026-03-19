@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Separator } from "@/components/ui/separator";
 
 export default function CheckoutPage() {
-    const { user } = useAuth();
+    useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [placing, setPlacing] = useState(false);
@@ -53,7 +53,7 @@ export default function CheckoutPage() {
                     toast.error("Cart is empty");
                     navigate('/cart');
                 }
-            } catch (error) {
+            } catch {
                 toast.error("Failed to load checkout data");
             } finally {
                 setLoading(false);

@@ -1,8 +1,6 @@
 // Seed Products Script
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from '../models/Product.js';
-import User from '../models/User.js';
 import connectDB from '../config/db.js';
 
 dotenv.config();

@@ -45,7 +45,7 @@ function Navbar() {
         try {
           const { data } = await api.get('/cart');
           setCartCount(data.items?.length || 0);
-        } catch (error) {
+        } catch {
           console.error("Failed to fetch cart count");
         }
       } else {

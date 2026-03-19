@@ -70,7 +70,7 @@ router.get('/oauth/finalize', (req, res) => {
         generateToken(res, decoded.id);
 
         res.json({ success: true });
-    } catch (error) {
+    } catch {
         res.sendStatus(401);
     }
 });

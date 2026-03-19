@@ -3,7 +3,7 @@ import { Truck, ShieldCheck, BadgeCheck, ArrowRight, ShoppingBag, Star, Zap } fr
 import { Link } from "react-router-dom";
 import Skeleton from "../components/Skeleton";
 import api from "../utils/api";
-import toast from "react-hot-toast";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +22,7 @@ function HomePage() {
         } else {
           setFeaturedProducts([]);
         }
-      } catch (err) {
+      } catch {
         // console.error("Failed to fetch featured products");
       } finally {
         setLoading(false);

@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 const ProfilePage = () => {
     const { user, login, logout } = useAuth();
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
     const navigate = useNavigate();
 

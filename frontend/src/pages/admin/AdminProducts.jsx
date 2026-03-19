@@ -31,6 +31,7 @@ const AdminProducts = () => {
             fetchProducts(1);
         }, 500);
         return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchTerm]);
 
     const fetchProducts = async (page = 1) => {
@@ -49,7 +50,7 @@ const AdminProducts = () => {
                 pages: data.pages || 1,
                 total: data.total || 0,
             });
-        } catch (error) {
+        } catch {
             toast.error('Failed to load products');
         } finally {
             setLoading(false);
@@ -68,7 +69,7 @@ const AdminProducts = () => {
                 await api.delete(`/products/${id}`);
                 setProducts(products.filter(p => p._id !== id));
                 toast.success('Product deleted successfully');
-            } catch (error) {
+            } catch {
                 toast.error('Failed to delete product');
             }
         }
@@ -93,10 +94,7 @@ const AdminProducts = () => {
         setIsWrapperOpen(false);
     };
 
-    const filteredProducts = products.filter(product =>
-        product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
 
     return (
         <AdminLayout>

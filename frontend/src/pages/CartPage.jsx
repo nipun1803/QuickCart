@@ -72,7 +72,7 @@ export default function Cart() {
         localStorage.setItem('cart', JSON.stringify(updated));
         window.dispatchEvent(new Event("cartUpdated"));
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to update quantity");
     }
   };
@@ -91,7 +91,7 @@ export default function Cart() {
         window.dispatchEvent(new Event("cartUpdated"));
         toast.success("Item removed");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to remove item");
     }
   };

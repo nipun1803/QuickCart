@@ -17,7 +17,7 @@ const MyOrdersPage = () => {
             try {
                 const { data } = await api.get('/orders');
                 setOrders(data);
-            } catch (error) {
+            } catch {
                 toast.error('Failed to load orders');
             } finally {
                 setLoading(false);
@@ -26,16 +26,7 @@ const MyOrdersPage = () => {
         fetchOrders();
     }, []);
 
-    const getStatusVariant = (status) => {
-        const variants = {
-            pending: 'secondary',
-            processing: 'default',
-            shipped: 'default', // blue-ish? default is primary. I can customize if needed.
-            delivered: 'success', // need to check if badge supports success variant, usually only default, secondary, outline, destructive. I'll use default or outline with custom class.
-            cancelled: 'destructive',
-        };
-        return variants[status?.toLowerCase()] || 'secondary';
-    };
+
 
     // Helper for badge color if variant isn't enough
     const getStatusClass = (status) => {

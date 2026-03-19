@@ -27,7 +27,6 @@ export const register = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                role: user.role,
                 token: generateToken(res, user._id),
             });
         } else {

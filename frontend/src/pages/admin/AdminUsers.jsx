@@ -30,7 +30,7 @@ const AdminUsers = () => {
         try {
             const { data } = await api.get('/admin/users');
             setUsers(data.users || []);
-        } catch (error) {
+        } catch {
             toast.error('Failed to load users');
         } finally {
             setLoading(false);
@@ -43,7 +43,7 @@ const AdminUsers = () => {
                 await api.delete(`/admin/users/${id}`);
                 setUsers(users.filter(u => u._id !== id));
                 toast.success('User deleted successfully');
-            } catch (error) {
+            } catch {
                 toast.error('Failed to delete user');
             }
         }

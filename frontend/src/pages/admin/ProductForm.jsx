@@ -59,7 +59,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
             });
             setFormData(prev => ({ ...prev, image: data.imageUrl }));
             toast.success('Image uploaded successfully');
-        } catch (error) {
+        } catch {
             toast.error('Failed to upload image');
         } finally {
             setUploading(false);
@@ -82,7 +82,7 @@ const ProductForm = ({ product, onClose, onSave }) => {
             }
             // onClose() is handled by parent, but for Dialog, we might need to handle it carefully.
             // But since parent conditionally mounts, onClose called here is fine.
-        } catch (error) {
+        } catch {
             toast.error(product ? 'Failed to update product' : 'Failed to create product');
         } finally {
             setLoading(false);

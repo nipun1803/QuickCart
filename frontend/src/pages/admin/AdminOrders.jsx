@@ -35,7 +35,7 @@ const AdminOrders = () => {
         try {
             const { data } = await api.get('/orders/admin/all');
             setOrders(data.orders || []);
-        } catch (error) {
+        } catch {
             toast.error('Failed to load orders');
         } finally {
             setLoading(false);
@@ -47,7 +47,7 @@ const AdminOrders = () => {
             await api.put(`/orders/${id}/status`, { status: newStatus });
             setOrders(orders.map(o => o._id === id ? { ...o, status: newStatus } : o));
             toast.success('Order status updated');
-        } catch (error) {
+        } catch {
             toast.error('Failed to update status');
         }
     };

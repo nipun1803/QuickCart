@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ShoppingBag, Mail, MapPin, Phone, Facebook, Twitter, Instagram, Youtube, ArrowRight, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+
 
 function Footer() {
   const currentYear = new Date().getFullYear();

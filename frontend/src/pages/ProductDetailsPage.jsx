@@ -22,7 +22,7 @@ const ProductDetailsPage = () => {
             try {
                 const { data } = await api.get(`/products/${id}`);
                 setProduct(data);
-            } catch (error) {
+            } catch {
                 toast.error('Product not found');
                 navigate('/products');
             } finally {
@@ -42,7 +42,7 @@ const ProductDetailsPage = () => {
             await api.post('/cart/add', { productId: product._id, quantity });
             toast.success('Added to cart');
             window.dispatchEvent(new Event('cartUpdated'));
-        } catch (error) {
+        } catch {
             toast.error('Failed to add to cart');
         }
     };
@@ -56,7 +56,7 @@ const ProductDetailsPage = () => {
         try {
             await api.post(`/wishlist/${product._id}`);
             toast.success('Added to wishlist');
-        } catch (error) {
+        } catch {
             toast.error('Failed to add to wishlist');
         }
     };

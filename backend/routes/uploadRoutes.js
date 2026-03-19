@@ -9,7 +9,7 @@ router.post('/', upload.single('image'), (req, res) => {
             message: 'Image uploaded successfully',
             image: req.file.path,
         });
-    } catch (error) {
+    } catch {
         res.status(500).json({ message: 'Image upload failed' });
     }
 });

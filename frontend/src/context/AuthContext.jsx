@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../utils/api';
 
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }) => {
                 // 🔹 Step 4: fetch logged-in user using cookie
                 const { data } = await api.get('/auth/profile');
                 setUser(data);
-            } catch (error) {
+            } catch {
                 setUser(null);
             } finally {
                 setLoading(false);
@@ -52,8 +53,8 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await api.post('/auth/logout');
-        } catch (error) {
-            console.error('Logout failed', error);
+        } catch (_error) {
+            console.error('Logout failed', _error);
         }
         setUser(null);
         localStorage.removeItem('cart');
