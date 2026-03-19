@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock dependencies before importing the controller
 vi.mock('../../../backend/models/User.js', () => ({
     default: {
         findOne: vi.fn(),
@@ -16,7 +15,6 @@ import User from '../../../backend/models/User.js';
 import generateToken from '../../../backend/utils/generateToken.js';
 import { register, login, logout } from '../../../backend/controllers/authController.js';
 
-// Helper to create mock req/res
 const mockRes = () => {
     const res = {};
     res.status = vi.fn().mockReturnValue(res);
@@ -30,7 +28,6 @@ describe('Auth Controller - Unit Tests', () => {
         vi.clearAllMocks();
     });
 
-    // ─── REGISTER ───────────────────────────────────
     describe('register', () => {
         it('should register a new user and return 201', async () => {
             const req = {
@@ -38,7 +35,7 @@ describe('Auth Controller - Unit Tests', () => {
             };
             const res = mockRes();
 
-            User.findOne.mockResolvedValue(null); // no existing user
+            User.findOne.mockResolvedValue(null);
             User.create.mockResolvedValue({
                 _id: 'abc123',
                 name: 'Test User',
@@ -96,7 +93,6 @@ describe('Auth Controller - Unit Tests', () => {
         });
     });
 
-    // ─── LOGIN ──────────────────────────────────────
     describe('login', () => {
         it('should login with valid credentials', async () => {
             const req = {
@@ -152,7 +148,6 @@ describe('Auth Controller - Unit Tests', () => {
         });
     });
 
-    // ─── LOGOUT ─────────────────────────────────────
     describe('logout', () => {
         it('should clear jwt cookie and return 200', () => {
             const req = {};

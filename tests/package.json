@@ -5,12 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test:unit:backend": "vitest run -c vitest.backend.config.js",
-    "test:unit:frontend": "vitest run -c vitest.frontend.config.js",
-    "test:integration": "vitest run -c vitest.integration.config.js",
+    "test:unit:backend": "TMPDIR=/tmp vitest run -c vitest.backend.config.js",
+    "test:unit:frontend": "TMPDIR=/tmp vitest run -c vitest.frontend.config.js",
+    "test:integration": "TMPDIR=/tmp vitest run -c vitest.integration.config.js",
     "test:backend": "npm run test:unit:backend",
     "test:frontend": "npm run test:unit:frontend",
-    "test:e2e": "npx playwright test -c playwright.config.js",
+    "test:e2e": "TMPDIR=/tmp npx playwright test -c playwright.config.js",
     "test:all": "npm run test:unit:backend && npm run test:unit:frontend && npm run test:integration && npm run test:e2e"
   },
   "repository": {

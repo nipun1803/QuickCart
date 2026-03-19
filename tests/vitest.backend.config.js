@@ -11,6 +11,9 @@ dotenv.config({ path: path.resolve(__dirname, '../backend/.env') });
 
 export default defineConfig({
     root: __dirname,
+    cache: {
+        dir: path.resolve(__dirname, './.vitest-cache')
+    },
     test: {
         globals: true,
         environment: 'node',

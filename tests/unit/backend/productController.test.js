@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock Product model
 vi.mock('../../../backend/models/Product.js', () => {
     const mockFind = vi.fn();
     const mockCountDocuments = vi.fn();
@@ -20,7 +19,6 @@ vi.mock('../../../backend/models/Product.js', () => {
 import Product from '../../../backend/models/Product.js';
 import { getProducts, getProductById, createProduct, deleteProduct } from '../../../backend/controllers/productController.js';
 
-// Helper to create mock req/res
 const mockRes = () => {
     const res = {};
     res.status = vi.fn().mockReturnValue(res);
@@ -33,7 +31,6 @@ describe('Product Controller - Unit Tests', () => {
         vi.clearAllMocks();
     });
 
-    // ─── GET ALL PRODUCTS ───────────────────────────
     describe('getProducts', () => {
         it('should return products with pagination', async () => {
             const mockProducts = [
@@ -45,7 +42,6 @@ describe('Product Controller - Unit Tests', () => {
             const res = mockRes();
 
             Product.countDocuments.mockResolvedValue(2);
-            // Chain: find().limit().skip().sort()
             Product.find.mockReturnValue({
                 limit: vi.fn().mockReturnValue({
                     skip: vi.fn().mockReturnValue({
@@ -98,7 +94,6 @@ describe('Product Controller - Unit Tests', () => {
         });
     });
 
-    // ─── GET PRODUCT BY ID ──────────────────────────
     describe('getProductById', () => {
         it('should return a product when found', async () => {
             const mockProduct = { _id: '1', title: 'Test Product', price: 50 };
@@ -126,7 +121,6 @@ describe('Product Controller - Unit Tests', () => {
         });
     });
 
-    // ─── CREATE PRODUCT ─────────────────────────────
     describe('createProduct', () => {
         it('should create and return a product with 201', async () => {
             const newProduct = {
@@ -152,7 +146,6 @@ describe('Product Controller - Unit Tests', () => {
         });
     });
 
-    // ─── DELETE PRODUCT ─────────────────────────────
     describe('deleteProduct', () => {
         it('should delete a product and return success message', async () => {
             const req = { params: { id: '1' } };

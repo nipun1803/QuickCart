@@ -10,6 +10,9 @@ const projectRoot = path.resolve(__dirname, '../');
 
 export default defineConfig({
     root: projectRoot,
+    cache: {
+        dir: path.resolve(__dirname, './.vitest-cache')
+    },
     plugins: [react()],
     test: {
         globals: true,

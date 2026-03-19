@@ -8,14 +8,11 @@ describe('Product Integration Tests', () => {
     let testProductId;
 
     beforeAll(async () => {
-        // Ensure connection is ready
         if (mongoose.connection.readyState === 0) {
             await mongoose.connect(process.env.MONGODB_URI);
         }
-        // Clear products
         await Product.deleteMany({ title: /Test Product/ });
 
-        // Create a test product
         const product = await Product.create({
             title: 'Test Product 1',
             description: 'Test Description',
@@ -28,10 +25,7 @@ describe('Product Integration Tests', () => {
     });
 
     afterAll(async () => {
-        // Cleanup
         await Product.deleteMany({ title: /Test Product/ });
-        // Close connection if it was opened here
-        // (but app usually handles it)
     });
 
     it('GET /api/products - should return all products', async () => {

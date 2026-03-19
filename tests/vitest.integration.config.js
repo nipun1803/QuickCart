@@ -12,16 +12,24 @@ const projectRoot = path.resolve(__dirname, '../');
 // Load backend environment variables for DB-backed integration tests
 dotenv.config({ path: path.resolve(projectRoot, 'backend/.env') });
 
+// Ensure server doesn't start listening during tests
+process.env.NODE_ENV = 'test';
+
 export default defineConfig({
     root: projectRoot,
+    cache: {
+        dir: path.resolve(__dirname, './.vitest-cache')
+    },
     plugins: [react()],
     test: {
         globals: true,
+        env: { NODE_ENV: 'test' },
         projects: [
             {
                 test: {
                     name: 'backend-integration',
                     environment: 'node',
+                    env: { NODE_ENV: 'test' },
                     include: ['tests/integration/backend/**/*.{test,spec}.{js,mjs,cjs,ts}'],
                     globals: true,
                     // Resolve backend dependencies from backend/node_modules

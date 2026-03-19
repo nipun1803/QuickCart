@@ -25,30 +25,23 @@ test.describe('Authentication Flow', () => {
         const timestamp = Date.now();
         const email = `e2e-reg-${timestamp}@example.com`;
 
-        // Wait for networkidle to ensure everything is loaded
         await page.goto('/signin', { waitUntil: 'networkidle' });
 
-        // Ensure we are in Customer mode (default)
         await page.getByRole('button', { name: /Customer/i }).click();
 
-        // Click Register tab
-        // There might be multiple "Register" texts, let's be specific to the tab button
         await page.getByRole('button', { name: 'Register', exact: true }).click();
 
         await page.fill('input[name="name"]', 'E2E User');
         await page.fill('input[name="email"]', email);
         await page.fill('input[name="password"]', 'password123');
 
-        // Click the submit button
         const submitBtn = page.getByRole('button', { name: /Create Free Account/i });
         await submitBtn.click();
 
         await checkErrors(page);
 
-        // Navigation can be slow with cloud DB
         await expect(page).toHaveURL('/', { timeout: 60000 });
 
-        // User menu should be visible (Avatar button)
         const avatarBtn = page.locator('.h-9.w-9.rounded-full').first();
         await expect(avatarBtn).toBeVisible({ timeout: 20000 });
     });
@@ -60,7 +53,6 @@ test.describe('Authentication Flow', () => {
         const email = `e2e-log-${timestamp}@example.com`;
         const password = 'password123';
 
-        // 1. Register a user first to have something to log in with
         await page.goto('/signin', { waitUntil: 'networkidle' });
         await page.getByRole('button', { name: 'Register', exact: true }).click();
         await page.fill('input[name="name"]', 'Login User');
@@ -69,13 +61,11 @@ test.describe('Authentication Flow', () => {
         await page.getByRole('button', { name: /Create Free Account/i }).click();
         await expect(page).toHaveURL('/', { timeout: 60000 });
 
-        // 2. Logout
         const avatarBtn = page.locator('.h-9.w-9.rounded-full').first();
         await avatarBtn.click();
         await page.getByRole('menuitem', { name: /Log out/i }).click();
         await expect(page.getByRole('link', { name: /Sign In/i })).toBeVisible();
 
-        // 3. Login
         await page.goto('/signin', { waitUntil: 'networkidle' });
         await page.fill('input[name="email"]', email);
         await page.fill('input[name="password"]', password);
