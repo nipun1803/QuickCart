@@ -10,7 +10,7 @@ export default defineConfig({
     reporter: [['html', { outputFolder: './playwright-report' }]],
 
     use: {
-        baseURL: 'http://localhost:5173',
+        baseURL: 'http://127.0.0.1:5173',
         trace: 'on-first-retry',
     },
     projects: [
@@ -22,7 +22,7 @@ export default defineConfig({
     webServer: [
         {
             command: 'cd ../backend && PLAYWRIGHT=true npm start',
-            url: 'http://localhost:5001/api/health',
+            url: 'http://127.0.0.1:5001/api/health',
             timeout: 180000,
             reuseExistingServer: false,
             env: {
@@ -33,8 +33,8 @@ export default defineConfig({
             }
         },
         {
-            command: 'cd ../frontend && npm run dev',
-            url: 'http://localhost:5173',
+            command: 'cd ../frontend && npm run dev -- --host',
+            url: 'http://127.0.0.1:5173',
             timeout: 180000,
             reuseExistingServer: false,
         }

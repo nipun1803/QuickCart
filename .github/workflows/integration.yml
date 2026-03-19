@@ -75,22 +75,9 @@ jobs:
       - name: Upload Frontend Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-build
+          name: frontend-build-${{ matrix.node-version }}
           path: frontend/dist/
           if-no-files-found: error
           retention-days: 3
+          overwrite: true
 
-      #
-      # --- CI_WORKFLOW Slack notify ---
-      #
-      - name: Slack Notify
-        if: always()
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_CHANNEL: '#all-github-actions'
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_TITLE: 'CI Update | ${{ github.repository }}'
-          SLACK_MESSAGE: '${{ job.status == ''success'' && ''🟢 CI PASSED'' || ''🔴 CI FAILED'' }} | Node: ${{ matrix.node-version }} | <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>'
-          SLACK_USERNAME: 'GitHub CI'
-          SLACK_ICON_EMOJI: ':robot_face:'

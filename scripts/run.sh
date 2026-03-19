@@ -26,33 +26,33 @@ command -v node >/dev/null 2>&1 || error "Node.js is not installed. Please insta
 command -v npm >/dev/null 2>&1 || error "npm is not installed. Please install npm to continue."
 log "Prerequisites met: Node $(node -v), npm $(npm -v)"
 
-# 2. Setup Server
+# 2. Setup Backend
 log "Setting up Backend (Server)..."
-if [ ! -d "server" ]; then
-    error "Server directory not found!"
+if [ ! -d "backend" ]; then
+    error "Backend directory not found!"
 fi
 
-cd server
+cd backend
 if [ ! -d "node_modules" ] || [ package.json -nt node_modules ]; then
-    log "Installing/Updating server dependencies..."
+    log "Installing/Updating backend dependencies..."
     npm install
 else
-    log "Server dependencies are up to date."
+    log "Backend dependencies are up to date."
 fi
 cd ..
 
-# 3. Setup Client
+# 3. Setup Frontend
 log "Setting up Frontend (Client)..."
-if [ ! -d "client" ]; then
-    error "Client directory not found!"
+if [ ! -d "frontend" ]; then
+    error "Frontend directory not found!"
 fi
 
-cd client
+cd frontend
 if [ ! -d "node_modules" ] || [ package.json -nt node_modules ]; then
-    log "Installing/Updating client dependencies..."
+    log "Installing/Updating frontend dependencies..."
     npm install
 else
-    log "Client dependencies are up to date."
+    log "Frontend dependencies are up to date."
 fi
 cd ..
 
