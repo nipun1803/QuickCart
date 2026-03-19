@@ -1,4 +1,4 @@
-name: Unit & Integration Tests
+name: Unit Tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main, new-feature, bugfix ]
 
 jobs:
-  test-unit-integration:
+  test-unit:
     timeout-minutes: 30
     runs-on: ubuntu-latest
 
@@ -41,18 +41,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
 
+      - name: Install Common Test Dependencies
+        run: |
+          cd tests
+          npm ci
+
       - name: Install Backend Dependencies
         run: |
           cd backend
           npm ci
 
-      - name: Start Backend
-        run: |
-          cd backend
-          npm start &
-          npx wait-on http://localhost:5001/api/health
-
-      - name: Run Backend Tests
+      - name: Run Backend Unit Tests
         run: |
           cd backend
           npm test
@@ -62,7 +61,7 @@ jobs:
           cd frontend
           npm ci
 
-      - name: Run Frontend Tests
+      - name: Run Frontend Unit Tests
         run: |
           cd frontend
           npm test
