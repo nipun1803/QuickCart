@@ -61,7 +61,7 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5001;
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' || process.env.PLAYWRIGHT === 'true') {
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });
