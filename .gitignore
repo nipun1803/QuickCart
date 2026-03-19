@@ -7,3 +7,5 @@ tests/playwright-report/
 tests/test-results/
 .DS_Store
 test_output.txt
+SCRIPTS.md
+WORKFLOWS.md
