@@ -20,22 +20,19 @@ jobs:
           port: 22
           script: |
             # Navigate to the project directory on EC2
-            # Replace this path with your actual project location on the server
-            cd ~/shopsmart-main
+            cd ~/QuickCart || git clone https://github.com/nipun1803/QuickCart.git ~/QuickCart && cd ~/QuickCart
             
-            # Pull the latest code from the main branch
+            # Pull the latest code
             git pull origin main
             
-            # Fast, Idempotent dependency installation using the existing script
-            bash install.sh
+            # Install backend dependencies and restart the server
+            cd backend
+            npm install --production
+            pm2 restart quickcart-backend || pm2 start server.js --name quickcart-backend
             
-            # Build the frontend
-            cd client
+            # Install frontend dependencies and build
+            cd ../frontend
+            npm install
             npm run build
-            
-            # Restart the backend process using PM2 (a popular process manager)
-            # If not using PM2, this can be swapped with standard nohup/systemctl commands
-            cd ../server
-            pm2 restart shopsmart-backend || pm2 start src/index.js --name shopsmart-backend
             
             echo "🚀 Deployment successfully completed!"
