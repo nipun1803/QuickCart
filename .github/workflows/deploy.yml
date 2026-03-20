@@ -1,40 +1,41 @@
-name: Automated EC2 Deployment
+name: Deploy to EC2
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
   deploy:
-    name: Deploy to EC2
+    name: Deploy Application
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Ensure EC2 is Running
-        run: |
-          chmod +x ./scripts/safe-ec2-control.sh
-          ./scripts/safe-ec2-control.sh start
-
-      - name: Deploy Code via SSH
-        uses: appleboy/ssh-action@master
+      - name: Execute deployment commands via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
           script: |
-            cd /home/ec2-user/QuickCart || git clone https://github.com/nipun1803/QuickCart.git /home/ec2-user/QuickCart
-            cd /home/ec2-user/QuickCart
+            # Navigate to the project directory on EC2
+            # Replace this path with your actual project location on the server
+            cd ~/shopsmart-main
+            
+            # Pull the latest code from the main branch
             git pull origin main
-            chmod +x ./scripts/run.sh
-            ./scripts/run.sh prod
+            
+            # Fast, Idempotent dependency installation using the existing script
+            bash install.sh
+            
+            # Build the frontend
+            cd client
+            npm run build
+            
+            # Restart the backend process using PM2 (a popular process manager)
+            # If not using PM2, this can be swapped with standard nohup/systemctl commands
+            cd ../server
+            pm2 restart shopsmart-backend || pm2 start src/index.js --name shopsmart-backend
+            
+            echo "🚀 Deployment successfully completed!"

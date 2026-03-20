@@ -8,8 +8,10 @@ test.describe('Product Browsing', () => {
 
         await expect(page.locator('h2:has-text("Featured Products")')).toBeVisible({ timeout: 15000 });
 
-        const firstProduct = page.locator('section:has-text("Featured Products") .group').first();
+        const featuredSection = page.locator('section:has-text("Featured Products")');
+        const firstProduct = featuredSection.locator('.group').first();
 
+        await firstProduct.waitFor({ state: 'visible', timeout: 15000 });
         await firstProduct.click();
 
         await expect(page).toHaveURL(/\/product\/.*/, { timeout: 15000 });

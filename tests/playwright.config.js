@@ -21,7 +21,7 @@ export default defineConfig({
     ],
     webServer: [
         {
-            command: 'cd ../backend && PLAYWRIGHT=true npm start',
+            command: 'cd ../backend && npm run seed && PLAYWRIGHT=true npm start',
             url: 'http://127.0.0.1:5001/api/health',
             timeout: 180000,
             reuseExistingServer: false,
