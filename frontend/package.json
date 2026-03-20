@@ -28,7 +28,7 @@
     "framer-motion": "^12.23.26",
     "lucide": "^0.525.0",
     "lucide-react": "^0.525.0",
-    "node": "^20.19.4",
+    "node": "^25.8.1",
     "react": "^19.1.0",
     "react-countup": "^6.5.3",
     "react-dom": "^19.1.0",
