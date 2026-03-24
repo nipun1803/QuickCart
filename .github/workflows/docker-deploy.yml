@@ -1,0 +1,29 @@
+name: Docker Deploy
+
+on:
+  push:
+    branches: [ "docker" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Build Backend Image
+        run: docker build ./backend -t ${{ secrets.DOCKERHUB_USERNAME }}/quickcart-backend:latest
+
+      - name: Build Frontend Image
+        run: docker build ./frontend -t ${{ secrets.DOCKERHUB_USERNAME }}/quickcart-frontend:latest
+
+      - name: Push Backend Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/quickcart-backend:latest
+
+      - name: Push Frontend Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/quickcart-frontend:latest
