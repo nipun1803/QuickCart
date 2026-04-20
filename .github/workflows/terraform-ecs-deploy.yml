@@ -224,16 +224,30 @@ jobs:
       - name: Export Terraform Outputs
         id: tf_output
         run: |
-          echo "ecr_backend_url=$(terraform output -raw ecr_backend_repository_url)" >> $GITHUB_OUTPUT
-          echo "ecr_frontend_url=$(terraform output -raw ecr_frontend_repository_url)" >> $GITHUB_OUTPUT
-          echo "ecs_cluster_name=$(terraform output -raw ecs_cluster_name)" >> $GITHUB_OUTPUT
-          echo "ecs_backend_service=$(terraform output -raw ecs_backend_service_name)" >> $GITHUB_OUTPUT
-          echo "ecs_frontend_service=$(terraform output -raw ecs_frontend_service_name)" >> $GITHUB_OUTPUT
+          TF_OUT=$(terraform output -json)
+          echo "ecr_backend_url=$(echo $TF_OUT | jq -r .ecr_backend_repository_url.value)" >> $GITHUB_OUTPUT
+          echo "ecr_frontend_url=$(echo $TF_OUT | jq -r .ecr_frontend_repository_url.value)" >> $GITHUB_OUTPUT
+          echo "ecs_cluster_name=$(echo $TF_OUT | jq -r .ecs_cluster_name.value)" >> $GITHUB_OUTPUT
+          echo "ecs_backend_service=$(echo $TF_OUT | jq -r .ecs_backend_service_name.value)" >> $GITHUB_OUTPUT
+          echo "ecs_frontend_service=$(echo $TF_OUT | jq -r .ecs_frontend_service_name.value)" >> $GITHUB_OUTPUT
+          echo "alb_dns_name=$(echo $TF_OUT | jq -r .alb_dns_name.value)" >> $GITHUB_OUTPUT
+
+      - name: Validate Terraform Outputs
+        run: |
+          if [ -z "${{ steps.tf_output.outputs.ecr_backend_url }}" ]; then
+            echo "❌ ERROR: Backend ECR URL is empty. Check if Terraform apply succeeded."
+            exit 1
+          fi
+          if [ -z "${{ steps.tf_output.outputs.ecr_frontend_url }}" ]; then
+            echo "❌ ERROR: Frontend ECR URL is empty."
+            exit 1
+          fi
+          echo "✅ Outputs validated"
 
       - name: Print Application URL
         run: |
           echo "==========================================="
-          echo "🚀 Application URL: http://$(terraform output -raw alb_dns_name)"
+          echo "🚀 Application URL: http://${{ steps.tf_output.outputs.alb_dns_name }}"
           echo "==========================================="
 
   # =========================================================================
@@ -256,6 +270,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Debug Received Outputs
+        run: |
+          echo "Target Backend ECR: ${{ needs.terraform.outputs.ecr_backend_url }}"
+          echo "Target Frontend ECR: ${{ needs.terraform.outputs.ecr_frontend_url }}"
+          if [ -z "${{ needs.terraform.outputs.ecr_backend_url }}" ]; then
+            echo "❌ FATAL: Received empty ECR URL from Terraform job."
+            exit 1
+          fi
 
       - name: Login to Amazon ECR
         id: ecr_login
