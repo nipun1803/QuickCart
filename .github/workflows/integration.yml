@@ -29,7 +29,10 @@ jobs:
 
     env:
       # Keep existing integration env
+      MONGODB_URI: mongodb://127.0.0.1:27017/testdb
       JWT_SECRET: testsecret
+      GOOGLE_CLIENT_ID: test
+      GOOGLE_CLIENT_SECRET: test
       NODE_ENV: test
       SESSION_SECRET: test
 
