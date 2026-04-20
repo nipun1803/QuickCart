@@ -82,12 +82,6 @@ variable "desired_count" {
 
 # --- Backend Environment Variables ---
 
-variable "mongodb_uri" {
-  description = "MongoDB connection string"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
 
 variable "jwt_secret" {
   description = "JWT signing secret"
@@ -103,35 +97,3 @@ variable "session_secret" {
   default     = ""
 }
 
-variable "cloudinary_cloud_name" {
-  description = "Cloudinary cloud name for image uploads"
-  type        = string
-  default     = ""
-}
-
-variable "cloudinary_api_key" {
-  description = "Cloudinary API key"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "cloudinary_api_secret" {
-  description = "Cloudinary API secret"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "google_client_id" {
-  description = "Google OAuth client ID"
-  type        = string
-  default     = ""
-}
-
-variable "google_client_secret" {
-  description = "Google OAuth client secret"
-  type        = string
-  sensitive   = true
-  default     = ""
-}

@@ -45,10 +45,7 @@ jobs:
 
     env:
       PORT: 5001
-      MONGODB_URI: mongodb://127.0.0.1:27017/testdb
       JWT_SECRET: testsecret
-      GOOGLE_CLIENT_ID: test
-      GOOGLE_CLIENT_SECRET: test
       NODE_ENV: test
       SESSION_SECRET: test
 
@@ -214,14 +211,8 @@ jobs:
           terraform plan \
             -var="aws_region=${{ env.AWS_REGION }}" \
             -var="project_name=${{ env.PROJECT_NAME }}" \
-            -var="mongodb_uri=${{ secrets.MONGODB_URI }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
             -var="session_secret=${{ secrets.SESSION_SECRET }}" \
-            -var="cloudinary_cloud_name=${{ secrets.CLOUDINARY_CLOUD_NAME }}" \
-            -var="cloudinary_api_key=${{ secrets.CLOUDINARY_API_KEY }}" \
-            -var="cloudinary_api_secret=${{ secrets.CLOUDINARY_API_SECRET }}" \
-            -var="google_client_id=${{ secrets.GOOGLE_CLIENT_ID }}" \
-            -var="google_client_secret=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
             -out=tfplan
 
       - name: Terraform Apply
