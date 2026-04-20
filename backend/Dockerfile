@@ -1,23 +1,59 @@
-# Use Node.js LTS version as base image
-FROM node:18-alpine
+# =============================================================================
+# QuickCart Backend — Multi-Stage Production Dockerfile
+# =============================================================================
 
-# Set working directory inside the container
+# ---------------------
+# Stage 1: Build
+# ---------------------
+FROM node:20-alpine AS build
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json first to leverage Docker cache
+# Copy package files and install ALL dependencies (including devDependencies)
 COPY package*.json ./
-
-# Install dependencies (using clean install for reliable, reproducible builds)
 RUN npm ci
 
-# Copy the rest of the application
+# Copy application source code
 COPY . .
 
-# Expose the port your server listens on (default 5001 from server.js)
+# ---------------------
+# Stage 2: Production
+# ---------------------
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+# Install only production dependencies
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Copy application code from build stage
+COPY --from=build /app/server.js ./server.js
+COPY --from=build /app/config ./config
+COPY --from=build /app/controllers ./controllers
+COPY --from=build /app/middleware ./middleware
+COPY --from=build /app/models ./models
+COPY --from=build /app/routes ./routes
+COPY --from=build /app/utils ./utils
+
+# Create a non-root user for security
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Change ownership of the app directory
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose the port the server listens on
 EXPOSE 5001
 
 # Set the node environment
 ENV NODE_ENV=production
 
+# Healthcheck — verifies the API is responsive
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:5001/api/health || exit 1
+
 # Start the backend server
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

@@ -9,3 +9,11 @@ tests/test-results/
 test_output.txt
 SCRIPTS.md
 WORKFLOWS.md
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
+terraform/terraform.tfvars
+.terraform.lock.hcl
