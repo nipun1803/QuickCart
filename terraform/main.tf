@@ -14,16 +14,16 @@ terraform {
   }
 
   # -------------------------------------------------------------------------
-  # Remote Backend (uncomment for production use)
-  # Requires an S3 bucket and DynamoDB table to be created first.
+  # S3 Remote Backend — State is stored in an encrypted, versioned S3 bucket
+  # The bucket is created by the CI pipeline before terraform init.
   # -------------------------------------------------------------------------
-  # backend "s3" {
-  #   bucket         = "quickcart-terraform-state"
-  #   key            = "terraform.tfstate"
-  #   region         = "us-east-1"
-  #   dynamodb_table = "quickcart-terraform-locks"
-  #   encrypt        = true
-  # }
+  backend "s3" {
+    bucket         = "quickcart-tfstate-nipun1803"
+    key            = "quickcart/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "quickcart-terraform-locks"
+  }
 }
 
 provider "aws" {
