@@ -65,15 +65,9 @@ resource "aws_ecs_task_definition" "backend" {
       environment = [
         { name = "NODE_ENV", value = "production" },
         { name = "PORT", value = tostring(var.backend_port) },
-        { name = "MONGODB_URI", value = var.mongodb_uri },
         { name = "JWT_SECRET", value = var.jwt_secret },
         { name = "SESSION_SECRET", value = var.session_secret },
         { name = "FRONTEND_URL", value = "http://${aws_lb.main.dns_name}" },
-        { name = "CLOUDINARY_CLOUD_NAME", value = var.cloudinary_cloud_name },
-        { name = "CLOUDINARY_API_KEY", value = var.cloudinary_api_key },
-        { name = "CLOUDINARY_API_SECRET", value = var.cloudinary_api_secret },
-        { name = "GOOGLE_CLIENT_ID", value = var.google_client_id },
-        { name = "GOOGLE_CLIENT_SECRET", value = var.google_client_secret },
       ]
 
       logConfiguration = {
