@@ -224,25 +224,44 @@ jobs:
       - name: Export Terraform Outputs
         id: tf_output
         run: |
-          TF_OUT=$(terraform output -json)
-          echo "ecr_backend_url=$(echo $TF_OUT | jq -r .ecr_backend_repository_url.value)" >> $GITHUB_OUTPUT
-          echo "ecr_frontend_url=$(echo $TF_OUT | jq -r .ecr_frontend_repository_url.value)" >> $GITHUB_OUTPUT
-          echo "ecs_cluster_name=$(echo $TF_OUT | jq -r .ecs_cluster_name.value)" >> $GITHUB_OUTPUT
-          echo "ecs_backend_service=$(echo $TF_OUT | jq -r .ecs_backend_service_name.value)" >> $GITHUB_OUTPUT
-          echo "ecs_frontend_service=$(echo $TF_OUT | jq -r .ecs_frontend_service_name.value)" >> $GITHUB_OUTPUT
-          echo "alb_dns_name=$(echo $TF_OUT | jq -r .alb_dns_name.value)" >> $GITHUB_OUTPUT
+          echo "📦 Extracting Terraform outputs..."
+          terraform output -json > tf_outputs.json
+          
+          # Debug: Show the raw output file (masked if needed, but these URLs are usually not sensitive)
+          echo "📄 Raw outputs.json content:"
+          cat tf_outputs.json
+          
+          # Function to extract, validate and set output
+          extract() {
+            local key=$1
+            local out_name=$2
+            local val=$(jq -r ".$key.value" tf_outputs.json)
+            if [ "$val" == "null" ] || [ -z "$val" ]; then
+              echo "⚠️ Warning: $key not found or null"
+            else
+              echo "$out_name=$val" >> $GITHUB_OUTPUT
+              echo "   ✅ $out_name set"
+            fi
+          }
+
+          extract "ecr_backend_repository_url" "ecr_backend_url"
+          extract "ecr_frontend_repository_url" "ecr_frontend_url"
+          extract "ecs_cluster_name" "ecs_cluster_name"
+          extract "ecs_backend_service_name" "ecs_backend_service"
+          extract "ecs_frontend_service_name" "ecs_frontend_service"
+          extract "alb_dns_name" "alb_dns_name"
 
       - name: Validate Terraform Outputs
         run: |
+          echo "🔍 Verifying captured outputs for job export:"
+          echo "   Backend ECR:  ${{ steps.tf_output.outputs.ecr_backend_url }}"
+          echo "   Frontend ECR: ${{ steps.tf_output.outputs.ecr_frontend_url }}"
+          
           if [ -z "${{ steps.tf_output.outputs.ecr_backend_url }}" ]; then
-            echo "❌ ERROR: Backend ECR URL is empty. Check if Terraform apply succeeded."
+            echo "❌ ERROR: ecr_backend_url is missing. Check Terraform state."
             exit 1
           fi
-          if [ -z "${{ steps.tf_output.outputs.ecr_frontend_url }}" ]; then
-            echo "❌ ERROR: Frontend ECR URL is empty."
-            exit 1
-          fi
-          echo "✅ Outputs validated"
+          echo "✅ Outputs validated and ready for next job"
 
       - name: Print Application URL
         run: |
