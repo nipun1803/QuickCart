@@ -19,7 +19,7 @@ resource "aws_lb" "main" {
 # --- Target Groups ---
 
 resource "aws_lb_target_group" "backend" {
-  name        = "${var.project_name}-backend-tg"
+  name_prefix = "qc-be-" # Limited to 6 chars for prefix
   port        = var.backend_port
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
@@ -37,13 +37,17 @@ resource "aws_lb_target_group" "backend" {
     matcher             = "200"
   }
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = {
     Name = "${var.project_name}-backend-tg"
   }
 }
 
 resource "aws_lb_target_group" "frontend" {
-  name        = "${var.project_name}-frontend-tg"
+  name_prefix = "qc-fe-" # Limited to 6 chars for prefix
   port        = var.frontend_port
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
@@ -59,6 +63,10 @@ resource "aws_lb_target_group" "frontend" {
     timeout             = 10
     interval            = 30
     matcher             = "200"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   tags = {
