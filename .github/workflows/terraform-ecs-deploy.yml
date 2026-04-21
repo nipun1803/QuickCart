@@ -292,6 +292,7 @@ jobs:
       - name: Build frontend Docker image
         run: |
           docker build ./frontend \
+            --build-arg VITE_API_URL=/api \
             -t ${{ steps.tf_output.outputs.ecr_frontend_url }}:${{ github.sha }} \
             -t ${{ steps.tf_output.outputs.ecr_frontend_url }}:latest
 

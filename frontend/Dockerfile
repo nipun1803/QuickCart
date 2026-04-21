@@ -16,6 +16,10 @@ RUN npm ci
 # Copy the rest of the application code
 COPY . .
 
+# Pass build arguments to Vite
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 # Build the application
 RUN npm run build
 
@@ -41,10 +45,10 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup && \
 # Switch to non-root user
 USER appuser
 
-EXPOSE 80
+EXPOSE 8080
 
 # Healthcheck — verifies nginx is serving the frontend
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
