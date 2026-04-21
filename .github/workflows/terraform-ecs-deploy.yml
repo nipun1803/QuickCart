@@ -319,17 +319,61 @@ jobs:
 
       - name: Wait for backend service stability
         run: |
-          aws ecs wait services-stable \
+          echo "⌛ Waiting for backend service stability (up to 10m)..."
+          if ! aws ecs wait services-stable \
             --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
             --services ${{ steps.tf_output.outputs.ecs_backend_service }} \
-            --region ${{ env.AWS_REGION }}
+            --region ${{ env.AWS_REGION }}; then
+            echo "❌ ERROR: Backend service failed to stabilize!"
+            echo "=========================================================="
+            echo "🔍 RECENT SERVICE EVENTS"
+            echo "=========================================================="
+            aws ecs describe-services \
+              --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+              --services ${{ steps.tf_output.outputs.ecs_backend_service }} \
+              --query 'services[0].events[0:10].[createdAt,message]' \
+              --output table \
+              --region ${{ env.AWS_REGION }}
+            
+            echo "🔍 TASK STATUS OVERVIEW"
+            aws ecs describe-services \
+              --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+              --services ${{ steps.tf_output.outputs.ecs_backend_service }} \
+              --query 'services[0].deployments' \
+              --output json \
+              --region ${{ env.AWS_REGION }}
+            exit 1
+          fi
+          echo "✅ Backend service is stable"
 
       - name: Wait for frontend service stability
         run: |
-          aws ecs wait services-stable \
+          echo "⌛ Waiting for frontend service stability (up to 10m)..."
+          if ! aws ecs wait services-stable \
             --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
             --services ${{ steps.tf_output.outputs.ecs_frontend_service }} \
-            --region ${{ env.AWS_REGION }}
+            --region ${{ env.AWS_REGION }}; then
+            echo "❌ ERROR: Frontend service failed to stabilize!"
+            echo "=========================================================="
+            echo "🔍 RECENT SERVICE EVENTS"
+            echo "=========================================================="
+            aws ecs describe-services \
+              --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+              --services ${{ steps.tf_output.outputs.ecs_frontend_service }} \
+              --query 'services[0].events[0:10].[createdAt,message]' \
+              --output table \
+              --region ${{ env.AWS_REGION }}
+
+            echo "🔍 TASK STATUS OVERVIEW"
+            aws ecs describe-services \
+              --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+              --services ${{ steps.tf_output.outputs.ecs_frontend_service }} \
+              --query 'services[0].deployments' \
+              --output json \
+              --region ${{ env.AWS_REGION }}
+            exit 1
+          fi
+          echo "✅ Frontend service is stable"
 
       # --- Verify Deployment ---
 
