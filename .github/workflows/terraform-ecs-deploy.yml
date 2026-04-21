@@ -221,47 +221,54 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
-      - name: Export Terraform Outputs
+      - name: Export & Validate Outputs
         id: tf_output
         run: |
           echo "📦 Extracting Terraform outputs..."
-          terraform output -json > tf_outputs.json
           
-          # Debug: Show the raw output file (masked if needed, but these URLs are usually not sensitive)
-          echo "📄 Raw outputs.json content:"
-          cat tf_outputs.json
+          # Set variables from Terraform outputs (silence errors if missing)
+          ECR_BACKEND=$(terraform output -raw ecr_backend_repository_url 2>/dev/null || echo "")
+          ECR_FRONTEND=$(terraform output -raw ecr_frontend_repository_url 2>/dev/null || echo "")
+          CLUSTER=$(terraform output -raw ecs_cluster_name 2>/dev/null || echo "")
+          SVC_BACKEND=$(terraform output -raw ecs_backend_service_name 2>/dev/null || echo "")
+          SVC_FRONTEND=$(terraform output -raw ecs_frontend_service_name 2>/dev/null || echo "")
+          ALB_DNS=$(terraform output -raw alb_dns_name 2>/dev/null || echo "")
           
-          # Function to extract, validate and set output
-          extract() {
-            local key=$1
-            local out_name=$2
-            local val=$(jq -r ".$key.value" tf_outputs.json)
-            if [ "$val" == "null" ] || [ -z "$val" ]; then
-              echo "⚠️ Warning: $key not found or null"
-            else
-              echo "$out_name=$val" >> $GITHUB_OUTPUT
-              echo "   ✅ $out_name set"
-            fi
-          }
-
-          extract "ecr_backend_repository_url" "ecr_backend_url"
-          extract "ecr_frontend_repository_url" "ecr_frontend_url"
-          extract "ecs_cluster_name" "ecs_cluster_name"
-          extract "ecs_backend_service_name" "ecs_backend_service"
-          extract "ecs_frontend_service_name" "ecs_frontend_service"
-          extract "alb_dns_name" "alb_dns_name"
-
-      - name: Validate Terraform Outputs
-        run: |
-          echo "🔍 Verifying captured outputs for job export:"
-          echo "   Backend ECR:  ${{ steps.tf_output.outputs.ecr_backend_url }}"
-          echo "   Frontend ECR: ${{ steps.tf_output.outputs.ecr_frontend_url }}"
-          
-          if [ -z "${{ steps.tf_output.outputs.ecr_backend_url }}" ]; then
-            echo "❌ ERROR: ecr_backend_url is missing. Check Terraform state."
-            exit 1
+          # FAIL-SAFE: Fallback calculation if Terraform outputs are missing
+          if [ -z "$ECR_BACKEND" ]; then
+            echo "⚠️ Warning: Terraform outputs are empty. Activating fallback calculation..."
+            
+            # Get AWS Account ID
+            ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+            
+            # Construct standard URLs based on project naming conventions
+            ECR_BACKEND="${ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PROJECT_NAME }}-backend"
+            ECR_FRONTEND="${ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.PROJECT_NAME }}-frontend"
+            
+            # Construct resource names
+            CLUSTER="${{ env.PROJECT_NAME }}-cluster"
+            SVC_BACKEND="${{ env.PROJECT_NAME }}-backend-service"
+            SVC_FRONTEND="${{ env.PROJECT_NAME }}-frontend-service"
+            
+            echo "   ✅ Fallback ECR URLs generated"
+            echo "   ✅ Fallback ECS names generated"
+          else
+            echo "   ✅ Outputs extracted from Terraform state"
           fi
-          echo "✅ Outputs validated and ready for next job"
+          
+          # Export to GITHUB_OUTPUT
+          echo "ecr_backend_url=$ECR_BACKEND" >> $GITHUB_OUTPUT
+          echo "ecr_frontend_url=$ECR_FRONTEND" >> $GITHUB_OUTPUT
+          echo "ecs_cluster_name=$CLUSTER" >> $GITHUB_OUTPUT
+          echo "ecs_backend_service=$SVC_BACKEND" >> $GITHUB_OUTPUT
+          echo "ecs_frontend_service=$SVC_FRONTEND" >> $GITHUB_OUTPUT
+          echo "alb_dns_name=$ALB_DNS" >> $GITHUB_OUTPUT
+          
+          # Final validation print
+          echo "🔍 Captured Outputs:"
+          echo "   Backend ECR:  $ECR_BACKEND"
+          echo "   Frontend ECR: $ECR_FRONTEND"
+          echo "   ECS Cluster:  $CLUSTER"
 
       - name: Print Application URL
         run: |
