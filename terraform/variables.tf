@@ -97,3 +97,10 @@ variable "session_secret" {
   default     = ""
 }
 
+variable "mongodb_uri" {
+  description = "MongoDB connection string"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+

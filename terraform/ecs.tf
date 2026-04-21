@@ -67,6 +67,7 @@ resource "aws_ecs_task_definition" "backend" {
         { name = "PORT", value = tostring(var.backend_port) },
         { name = "JWT_SECRET", value = var.jwt_secret },
         { name = "SESSION_SECRET", value = var.session_secret },
+        { name = "MONGODB_URI", value = var.mongodb_uri },
         { name = "FRONTEND_URL", value = "http://${aws_lb.main.dns_name}" },
       ]
 

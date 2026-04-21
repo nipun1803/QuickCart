@@ -206,6 +206,7 @@ jobs:
             -var="project_name=${{ env.PROJECT_NAME }}" \
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
             -var="session_secret=${{ secrets.SESSION_SECRET }}" \
+            -var="mongodb_uri=${{ secrets.MONGODB_URI }}" \
             -out=tfplan
         working-directory: ./terraform
 
