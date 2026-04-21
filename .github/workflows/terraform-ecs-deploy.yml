@@ -103,23 +103,13 @@ jobs:
         run: npm run build --prefix frontend
 
   # =========================================================================
-  # Phase 2 — Infrastructure Provisioning (Terraform)
+  # Phase 2 — Provision & Deploy (Unified Job)
   # =========================================================================
-  terraform:
-    name: Terraform Apply
+  deploy:
+    name: Provision and Deploy to ECS
     runs-on: ubuntu-latest
     needs: test
     if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'workflow_dispatch'
-    defaults:
-      run:
-        working-directory: ./terraform
-
-    outputs:
-      ecr_backend_url: ${{ steps.tf_output.outputs.ecr_backend_url }}
-      ecr_frontend_url: ${{ steps.tf_output.outputs.ecr_frontend_url }}
-      ecs_cluster_name: ${{ steps.tf_output.outputs.ecs_cluster_name }}
-      ecs_backend_service: ${{ steps.tf_output.outputs.ecs_backend_service }}
-      ecs_frontend_service: ${{ steps.tf_output.outputs.ecs_frontend_service }}
 
     steps:
       - name: Checkout code
@@ -136,7 +126,6 @@ jobs:
       # --- Bootstrap S3 Backend (versioning, encryption, public access blocked) ---
 
       - name: Create S3 bucket for Terraform state (if not exists)
-        working-directory: .
         run: |
           if ! aws s3api head-bucket --bucket "$TF_STATE_BUCKET" 2>/dev/null; then
             echo "📦 Creating S3 bucket: $TF_STATE_BUCKET"
@@ -179,7 +168,6 @@ jobs:
           fi
 
       - name: Create DynamoDB table for state locking (if not exists)
-        working-directory: .
         run: |
           if ! aws dynamodb describe-table --table-name "$TF_LOCK_TABLE" --region "$AWS_REGION" 2>/dev/null; then
             echo "🔒 Creating DynamoDB lock table: $TF_LOCK_TABLE"
@@ -205,9 +193,11 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: ./terraform
 
       - name: Terraform Validate
         run: terraform validate
+        working-directory: ./terraform
 
       - name: Terraform Plan
         run: |
@@ -217,9 +207,11 @@ jobs:
             -var="jwt_secret=${{ secrets.JWT_SECRET }}" \
             -var="session_secret=${{ secrets.SESSION_SECRET }}" \
             -out=tfplan
+        working-directory: ./terraform
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+        working-directory: ./terraform
 
       - name: Export & Validate Outputs
         id: tf_output
@@ -265,46 +257,17 @@ jobs:
           echo "alb_dns_name=$ALB_DNS" >> $GITHUB_OUTPUT
           
           # Final validation print
-          echo "🔍 Captured Outputs:"
+          echo "🔍 Captured Outputs for next steps:"
           echo "   Backend ECR:  $ECR_BACKEND"
           echo "   Frontend ECR: $ECR_FRONTEND"
           echo "   ECS Cluster:  $CLUSTER"
+        working-directory: ./terraform
 
       - name: Print Application URL
         run: |
           echo "==========================================="
           echo "🚀 Application URL: http://${{ steps.tf_output.outputs.alb_dns_name }}"
           echo "==========================================="
-
-  # =========================================================================
-  # Phase 3 — Container Build & ECS Deployment
-  # =========================================================================
-  deploy:
-    name: Build & Deploy to ECS
-    runs-on: ubuntu-latest
-    needs: terraform
-    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'workflow_dispatch'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Debug Received Outputs
-        run: |
-          echo "Target Backend ECR: ${{ needs.terraform.outputs.ecr_backend_url }}"
-          echo "Target Frontend ECR: ${{ needs.terraform.outputs.ecr_frontend_url }}"
-          if [ -z "${{ needs.terraform.outputs.ecr_backend_url }}" ]; then
-            echo "❌ FATAL: Received empty ECR URL from Terraform job."
-            exit 1
-          fi
 
       - name: Login to Amazon ECR
         id: ecr_login
@@ -315,57 +278,57 @@ jobs:
       - name: Build backend Docker image
         run: |
           docker build ./backend \
-            -t ${{ needs.terraform.outputs.ecr_backend_url }}:${{ github.sha }} \
-            -t ${{ needs.terraform.outputs.ecr_backend_url }}:latest
+            -t ${{ steps.tf_output.outputs.ecr_backend_url }}:${{ github.sha }} \
+            -t ${{ steps.tf_output.outputs.ecr_backend_url }}:latest
 
       - name: Push backend image to ECR
         run: |
-          docker push ${{ needs.terraform.outputs.ecr_backend_url }}:${{ github.sha }}
-          docker push ${{ needs.terraform.outputs.ecr_backend_url }}:latest
+          docker push ${{ steps.tf_output.outputs.ecr_backend_url }}:${{ github.sha }}
+          docker push ${{ steps.tf_output.outputs.ecr_backend_url }}:latest
 
       # --- Build & Push Frontend ---
 
       - name: Build frontend Docker image
         run: |
           docker build ./frontend \
-            -t ${{ needs.terraform.outputs.ecr_frontend_url }}:${{ github.sha }} \
-            -t ${{ needs.terraform.outputs.ecr_frontend_url }}:latest
+            -t ${{ steps.tf_output.outputs.ecr_frontend_url }}:${{ github.sha }} \
+            -t ${{ steps.tf_output.outputs.ecr_frontend_url }}:latest
 
       - name: Push frontend image to ECR
         run: |
-          docker push ${{ needs.terraform.outputs.ecr_frontend_url }}:${{ github.sha }}
-          docker push ${{ needs.terraform.outputs.ecr_frontend_url }}:latest
+          docker push ${{ steps.tf_output.outputs.ecr_frontend_url }}:${{ github.sha }}
+          docker push ${{ steps.tf_output.outputs.ecr_frontend_url }}:latest
 
       # --- Deploy to ECS Fargate ---
 
       - name: Deploy backend to ECS
         run: |
           aws ecs update-service \
-            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
-            --service ${{ needs.terraform.outputs.ecs_backend_service }} \
+            --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+            --service ${{ steps.tf_output.outputs.ecs_backend_service }} \
             --force-new-deployment \
             --region ${{ env.AWS_REGION }}
 
       - name: Deploy frontend to ECS
         run: |
           aws ecs update-service \
-            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
-            --service ${{ needs.terraform.outputs.ecs_frontend_service }} \
+            --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+            --service ${{ steps.tf_output.outputs.ecs_frontend_service }} \
             --force-new-deployment \
             --region ${{ env.AWS_REGION }}
 
       - name: Wait for backend service stability
         run: |
           aws ecs wait services-stable \
-            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
-            --services ${{ needs.terraform.outputs.ecs_backend_service }} \
+            --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+            --services ${{ steps.tf_output.outputs.ecs_backend_service }} \
             --region ${{ env.AWS_REGION }}
 
       - name: Wait for frontend service stability
         run: |
           aws ecs wait services-stable \
-            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
-            --services ${{ needs.terraform.outputs.ecs_frontend_service }} \
+            --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+            --services ${{ steps.tf_output.outputs.ecs_frontend_service }} \
             --region ${{ env.AWS_REGION }}
 
       # --- Verify Deployment ---
@@ -374,8 +337,8 @@ jobs:
         run: |
           echo "🔍 Verifying backend service..."
           BACKEND_STATUS=$(aws ecs describe-services \
-            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
-            --services ${{ needs.terraform.outputs.ecs_backend_service }} \
+            --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+            --services ${{ steps.tf_output.outputs.ecs_backend_service }} \
             --region ${{ env.AWS_REGION }} \
             --query 'services[0].deployments[0].runningCount' \
             --output text)
@@ -383,8 +346,8 @@ jobs:
 
           echo "🔍 Verifying frontend service..."
           FRONTEND_STATUS=$(aws ecs describe-services \
-            --cluster ${{ needs.terraform.outputs.ecs_cluster_name }} \
-            --services ${{ needs.terraform.outputs.ecs_frontend_service }} \
+            --cluster ${{ steps.tf_output.outputs.ecs_cluster_name }} \
+            --services ${{ steps.tf_output.outputs.ecs_frontend_service }} \
             --region ${{ env.AWS_REGION }} \
             --query 'services[0].deployments[0].runningCount' \
             --output text)
