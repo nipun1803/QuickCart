@@ -22,7 +22,7 @@ terraform {
     key            = "quickcart/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
-    dynamodb_table = "quickcart-terraform-locks"  
+    use_lockfile   = true
 }
 }
 
