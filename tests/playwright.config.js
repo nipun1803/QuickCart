@@ -10,7 +10,7 @@ export default defineConfig({
     reporter: [['html', { outputFolder: './playwright-report' }]],
 
     use: {
-        baseURL: 'http://127.0.0.1:5173',
+        baseURL: 'http://localhost:5173',
         trace: 'on-first-retry',
     },
     projects: [
@@ -22,20 +22,20 @@ export default defineConfig({
     webServer: [
         {
             command: 'cd ../backend && npm run seed && PLAYWRIGHT=true npm start',
-            url: 'http://127.0.0.1:5001/api/health',
-            timeout: 180000,
+            url: 'http://localhost:5001/api/health',
+            timeout: 300000,
             reuseExistingServer: false,
             env: {
                 PORT: '5001',
                 NODE_ENV: 'test',
                 PLAYWRIGHT: 'true',
-                MONGODB_URI: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/testdb'
+                MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/testdb'
             }
         },
         {
-            command: 'cd ../frontend && npm run dev -- --host',
-            url: 'http://127.0.0.1:5173',
-            timeout: 180000,
+            command: 'cd ../frontend && npm run dev -- --host --port 5173 --strictPort',
+            url: 'http://localhost:5173',
+            timeout: 300000,
             reuseExistingServer: false,
         }
     ],

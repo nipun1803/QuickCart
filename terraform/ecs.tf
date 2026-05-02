@@ -62,6 +62,14 @@ resource "aws_ecs_task_definition" "backend" {
         }
       ]
 
+      healthCheck = {
+        command     = ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5001/api/health || exit 1"]
+        interval    = 30
+        timeout     = 10
+        startPeriod = 15
+        retries     = 3
+      }
+
       environment = [
         { name = "NODE_ENV", value = "production" },
         { name = "PORT", value = tostring(var.backend_port) },
@@ -111,6 +119,14 @@ resource "aws_ecs_task_definition" "frontend" {
           protocol      = "tcp"
         }
       ]
+
+      healthCheck = {
+        command     = ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1"]
+        interval    = 30
+        timeout     = 10
+        startPeriod = 10
+        retries     = 3
+      }
 
       logConfiguration = {
         logDriver = "awslogs"
